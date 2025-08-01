@@ -1,7 +1,27 @@
 import React from 'react';
 import styles from '../styles/Select.module.css';
 
-export default class Select extends React.Component {
+interface SelectProps {
+  id: string;
+  children: React.ReactNode;
+  'data-value'?: string;
+  'data-send-on-save'?: boolean;
+  'data-type'?: string;
+  value?: string;
+  placeholder?: string;
+  style?: React.CSSProperties;
+  [key: string]: any;
+}
+
+interface OptionProps {
+  children: React.ReactNode;
+  'data-value'?: string;
+  'data-li'?: string;
+  selected?: boolean;
+  [key: string]: any;
+}
+
+export default class Select extends React.Component<SelectProps> {
     componentDidMount() {
         const { id } = this.props as { id: string };
         const w = document.getElementById(`w-${id}`) as HTMLElement;
@@ -63,7 +83,7 @@ export default class Select extends React.Component {
     }
     
     render() {
-        const { children, id, ['data-value']: data_value, value, placeholder = "", ...m } = this.props as { children: any; id: string; 'data-value': string, value: string, placeholder: string };
+        const { children, id, 'data-value': data_value, value, placeholder = "", ...m } = this.props;
         return (
             <main id={`w-${id}`} {...m} data-value={data_value || value || 'none'}>
                 <div className={styles["select-wrapper"]}>
@@ -82,7 +102,7 @@ export default class Select extends React.Component {
     }
 }
 
-export const Option = function(props) {
+export const Option: React.FC<OptionProps> = function(props) {
     return (
         <span 
             className={`${styles["option"]}${!!props.selected ? ` ${styles["selected"]}` : ''}`}

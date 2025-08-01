@@ -1,5 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
 
-Permissions.FLAGS = require('../Constants').Permissions;
-
-export default Permissions;
+// Discord.js v14 uses PermissionFlagsBits instead of Permissions.FLAGS
+export default PermissionFlagsBits;
