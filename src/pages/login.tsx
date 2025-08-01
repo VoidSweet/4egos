@@ -1,13 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import DiscordLoginButton from '../components/DiscordLoginButton';
 import styles from '../styles/Login.module.css';
 
 export default function Login() {
-    const handleDiscordLogin = () => {
-        window.location.href = '/api/auth/login';
-    };
-
     return (
         <>
             <Head>
@@ -24,13 +21,14 @@ export default function Login() {
                     </div>
 
                     <div className={styles.loginContent}>
-                        <button 
-                            onClick={handleDiscordLogin}
+                        <DiscordLoginButton 
+                            size="large"
                             className={styles.discordLoginBtn}
+                            redirectTo="/dashboard"
                         >
                             <i className="fab fa-discord"></i>
                             Continue with Discord
-                        </button>
+                        </DiscordLoginButton>
 
                         <div className={styles.features}>
                             <div className={styles.feature}>

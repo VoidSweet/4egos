@@ -1,0 +1,135 @@
+/* Discord Login Button Styles */
+.discord-login-btn {
+    background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 24px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(88, 101, 242, 0.2);
+}
+
+.discord-login-btn:hover {
+    background: linear-gradient(135deg, #4752c4 0%, #3c45a5 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(88, 101, 242, 0.3);
+}
+
+.discord-login-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(88, 101, 242, 0.2);
+}
+
+.discord-login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.discord-login-btn svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Size variants */
+.discord-login-btn.small {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.discord-login-btn.small svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
+
+.discord-login-btn.large {
+    padding: 16px 32px;
+    font-size: 18px;
+}
+
+.discord-login-btn.large svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+/* Outline variant */
+.discord-login-btn.outline {
+    background: transparent;
+    border: 2px solid #5865f2;
+    color: #5865f2;
+    box-shadow: none;
+}
+
+.discord-login-btn.outline:hover {
+    background: #5865f2;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(88, 101, 242, 0.3);
+}
+
+/* User avatar styles */
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #5865f2;
+    transition: all 0.2s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+}
+
+/* Status indicator */
+.status-indicator {
+    position: relative;
+}
+
+.status-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #23a55a;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.status-indicator.offline::after {
+    background: #80848e;
+}
+
+.status-indicator.idle::after {
+    background: #f0b232;
+}
+
+.status-indicator.dnd::after {
+    background: #f23f43;
+}
