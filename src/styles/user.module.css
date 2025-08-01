@@ -1,18 +1,161 @@
-.infoCard {
-    position: relative;
-    width: 18%;
-    max-width: 18%;
-    min-width: 18%;
-    height: auto;
-    margin: 10px;
-    padding: 24px;
-    background: linear-gradient(175deg, var(--luny-colors-ui-15), transparent);
-    /* background-color: var(--luny-colors-ui-5); */
-    color: var(--luny-colors-text-60);
-    border: 1px solid var(--luny-colors-ui-15);
-    border-radius: 14px;
+.profileContainer {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
+.infoCard {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 20px 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.userAvatar {
+    flex-shrink: 0;
+}
+
+.userAvatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.userInfo h2 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.userInfo p {
+    margin: 0 0 15px 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.xpBar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.xpProgress {
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.statsList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.statItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.statItem:last-child {
+    border-bottom: none;
+}
+
+.statItem span {
+    color: #666;
+}
+
+.statItem strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.achievementsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.achievementItem {
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.preferencesList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.preferenceItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.preferenceItem:last-child {
+    border-bottom: none;
+}
+
+.toggleButton {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    background: #4facfe;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+    background: #2196f3;
+    transform: translateY(-1px);
+}
+
+.connectionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.connectionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.connectionItem:last-child {
+    border-bottom: none;
+}
+
+.connected {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+/* Legacy styles for compatibility */
 .infoCard i {
     font-size: 50px;
     float: left;

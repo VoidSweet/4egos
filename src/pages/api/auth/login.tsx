@@ -1,5 +1,6 @@
 import generateOAuth2 from "../../../utils/generateOAuth2";
 import { setCookie } from 'nookies';
+import config from '../../../config';
 
 export default (req, res) => {
     if(req.query.dt == "true") {
@@ -12,8 +13,8 @@ export default (req, res) => {
     };
 
     const url = generateOAuth2({
-        clientId: process.env.DISCORD_CLIENT_ID,
-        redirect_uri: process.env.API_AUTH_CALLBACK,
+        clientId: config.discord.clientId,
+        redirect_uri: config.discord.redirectUri,
         scopes: ["identify", "guilds"],
         state: req.query.state || null,
         prompt: "none"

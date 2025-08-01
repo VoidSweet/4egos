@@ -3,6 +3,7 @@ import nookies from 'nookies';
 import fetch from 'node-fetch'
 import formData from 'form-data'
 import { getState, deleteState } from '../../../utils/states'
+import config from '../../../config';
 
 export default async function APIAuthCallback(req: NextApiRequest, res: NextApiResponse) {
     const code = req.query.code as string;
@@ -16,13 +17,13 @@ export default async function APIAuthCallback(req: NextApiRequest, res: NextApiR
         return res.send('No code');
     }
 
-    console.log(process.env.API_AUTH_CALLBACK)
+    console.log(config.discord.redirectUri)
 
     const data = new formData();
-    data.append("client_id", process.env.DISCORD_CLIENT_ID)
-    data.append("client_secret", process.env.DISCORD_CLIENT_SECRET)
+    data.append("client_id", config.discord.clientId)
+    data.append("client_secret", config.discord.clientSecret)
     data.append("grant_type", "authorization_code")
-    data.append("redirect_uri", process.env.API_AUTH_CALLBACK)
+    data.append("redirect_uri", config.discord.redirectUri)
     data.append("scopes", "identify guilds")
     data.append("code", code)
 
