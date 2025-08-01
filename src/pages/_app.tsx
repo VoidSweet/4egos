@@ -7,16 +7,19 @@ import '../styles/styles.css';
 import Theme from '../utils/theme';
 
 export default function MyApp({ Component, pageProps }) {
-    const [mode, setMode] = useState<'dark'|'light'|null>(null);
+    const [mode, setMode] = useState<'dark'|'light'>('dark');
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if(!mode) {
-            setMode(localStorage.getItem('mode') as 'dark' | 'light' | null || 'dark')
+        setIsClient(true);
+        const savedMode = localStorage.getItem('mode') as 'dark' | 'light' | null;
+        if (savedMode) {
+            setMode(savedMode);
         }
     }, []);
 
     const GlobalStyles = createGlobalStyle`
-        :root {${Theme({ mode: mode || 'dark' }).toString()}}
+        :root {${Theme({ mode }).toString()}}
     `
 
     return (
@@ -24,12 +27,13 @@ export default function MyApp({ Component, pageProps }) {
             <Head>
                 <title>AegisBot Dashboard</title>
                 <meta name="description" content="Comprehensive Discord bot management dashboard" />
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+                <link rel="alternate icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" />
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet" />
             </Head>
-            <GlobalStyles id="globalstyles" />
+            {isClient && <GlobalStyles id="globalstyles" />}
             <div className={"background-gradient"} />
             <Component {...pageProps} />
         </>
