@@ -91,7 +91,7 @@ export const getServerSideProps: GetServerSideProps = async(ctx) => {
 
     if(!token) return { 
         redirect: {
-            destination: `/api/auth/login?state=${createState({ url: ctx.req.url })}`,
+            destination: `/api/auth/login?state=${createState({ url: ctx.resolvedUrl || '/dashboard/guilds' })}`,
             permanent: false,
         } 
     };

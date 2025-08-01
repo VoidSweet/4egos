@@ -149,9 +149,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { ['__SessionLuny']: token } = parseCookies(ctx);
 
     if (!token) {
+        // Use resolvedUrl for proper redirect handling
+        const redirectUrl = ctx.resolvedUrl || '/dashboard/@me';
         return {
             redirect: {
-                destination: `/api/auth/login?state=${encodeURIComponent(ctx.req.url)}`,
+                destination: `/api/auth/login?state=${encodeURIComponent(redirectUrl)}`,
                 permanent: false,
             }
         };

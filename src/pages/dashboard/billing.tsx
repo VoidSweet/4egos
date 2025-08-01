@@ -96,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (!token) {
         return {
             redirect: {
-                destination: `/api/auth/login?state=${encodeURIComponent(ctx.req.url)}`,
+                destination: `/api/auth/login?state=${encodeURIComponent(ctx.resolvedUrl || '/dashboard/billing')}`,
                 permanent: false,
             }
         };
