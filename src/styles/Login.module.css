@@ -1,0 +1,224 @@
+/* Login Page Styles */
+.loginContainer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.backgroundPattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.loginCard {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    padding: 50px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+}
+
+.loginHeader h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Inter', sans-serif;
+}
+
+.loginHeader h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+.loginHeader p {
+    color: #6c757d;
+    margin-bottom: 40px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.loginContent {
+    margin: 40px 0;
+}
+
+.discordLoginBtn {
+    background: linear-gradient(45deg, #5865f2, #4752c4);
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+}
+
+.discordLoginBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+    background: linear-gradient(45deg, #4752c4, #3c45a3);
+}
+
+.discordLoginBtn i {
+    font-size: 1.3rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.feature:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.feature i {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.feature span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.loginFooter {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e9ecef;
+}
+
+.loginFooter p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 10px 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.loginFooter a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.loginFooter a:hover {
+    color: #4752c4;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loginCard {
+        padding: 40px 30px;
+        margin: 20px;
+    }
+    
+    .loginHeader h1 {
+        font-size: 2rem;
+    }
+    
+    .loginHeader h2 {
+        font-size: 1.5rem;
+    }
+    
+    .features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .feature {
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+        padding: 15px;
+    }
+    
+    .feature i {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loginContainer {
+        padding: 15px;
+    }
+    
+    .loginCard {
+        padding: 30px 20px;
+    }
+    
+    .loginHeader h1 {
+        font-size: 1.8rem;
+    }
+    
+    .loginHeader h2 {
+        font-size: 1.3rem;
+    }
+    
+    .discordLoginBtn {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+    
+    .feature {
+        padding: 12px;
+    }
+    
+    .feature span {
+        font-size: 0.85rem;
+    }
+}

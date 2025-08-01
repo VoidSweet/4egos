@@ -1,2 +1,74 @@
 import React from 'react';
-export default function Login() { return <div>Login Page</div>; }
+import Head from 'next/head';
+import Link from 'next/link';
+import styles from '../styles/Login.module.css';
+
+export default function Login() {
+    const handleDiscordLogin = () => {
+        window.location.href = '/api/auth/login';
+    };
+
+    return (
+        <>
+            <Head>
+                <title>Login - AegisBot Dashboard</title>
+                <meta name="description" content="Login to access your AegisBot dashboard" />
+            </Head>
+            
+            <div className={styles.loginContainer}>
+                <div className={styles.loginCard}>
+                    <div className={styles.loginHeader}>
+                        <h1>🛡️ AegisBot</h1>
+                        <h2>Login to Dashboard</h2>
+                        <p>Secure access to your Discord server management</p>
+                    </div>
+
+                    <div className={styles.loginContent}>
+                        <button 
+                            onClick={handleDiscordLogin}
+                            className={styles.discordLoginBtn}
+                        >
+                            <i className="fab fa-discord"></i>
+                            Continue with Discord
+                        </button>
+
+                        <div className={styles.features}>
+                            <div className={styles.feature}>
+                                <i className="fas fa-shield-alt"></i>
+                                <span>Advanced Security</span>
+                            </div>
+                            <div className={styles.feature}>
+                                <i className="fas fa-coins"></i>
+                                <span>Economy System</span>
+                            </div>
+                            <div className={styles.feature}>
+                                <i className="fas fa-chart-line"></i>
+                                <span>Real-time Analytics</span>
+                            </div>
+                            <div className={styles.feature}>
+                                <i className="fas fa-cogs"></i>
+                                <span>Easy Configuration</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.loginFooter}>
+                        <p>
+                            Don't have AegisBot in your server?{' '}
+                            <Link href="/invite">
+                                <a>Invite it now</a>
+                            </Link>
+                        </p>
+                        <p>
+                            <Link href="/">
+                                <a>← Back to Home</a>
+                            </Link>
+                        </p>
+                    </div>
+                </div>
+
+                <div className={styles.backgroundPattern}></div>
+            </div>
+        </>
+    );
+}

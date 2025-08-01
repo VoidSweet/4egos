@@ -1,0 +1,326 @@
+/* Dashboard Layout Styles */
+.dashboardHeader {
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+}
+
+.dashboardHeader h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.dashboardHeader p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Stats Grid */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+.statCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.statCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.statIcon {
+    font-size: 2.5rem;
+    padding: 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-align: center;
+    min-width: 70px;
+}
+
+.statContent h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+.statContent p {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Feature Grid */
+.featureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.featureCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.featureCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.featureIcon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.featureCard h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureCard p {
+    color: #6c757d;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureItems {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.featureItems span {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Activity Section */
+.activitySection {
+    margin-bottom: 50px;
+}
+
+.activitySection h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+.activityGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.activityCard {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+.activityCard h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f3f4;
+    font-family: 'Inter', sans-serif;
+}
+
+.activityItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f8f9fa;
+    font-family: 'Inter', sans-serif;
+}
+
+.activityItem:last-child {
+    border-bottom: none;
+}
+
+.activityTime {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+    min-width: 80px;
+}
+
+/* Status Section */
+.statusSection {
+    margin-bottom: 50px;
+}
+
+.statusSection h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+.statusGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.statusItem {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.statusIndicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.statusIndicator.online {
+    background: #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+.statusIndicator.offline {
+    background: #dc3545;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+.statusIndicator.warning {
+    background: #ffc107;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.statusItem span:first-of-type {
+    font-weight: 500;
+    color: #2c3e50;
+    flex-grow: 1;
+    font-family: 'Inter', sans-serif;
+}
+
+.statusValue {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboardHeader h1 {
+        font-size: 2rem;
+    }
+    
+    .dashboardHeader p {
+        font-size: 1rem;
+    }
+    
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .featureGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .activityGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .statusGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .statCard {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .featureCard {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboardHeader {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .statCard {
+        padding: 15px;
+    }
+    
+    .featureCard {
+        padding: 20px 15px;
+    }
+    
+    .activityCard {
+        padding: 20px;
+    }
+    
+    .statusItem {
+        padding: 15px;
+    }
+}

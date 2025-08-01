@@ -1,8 +1,297 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Potta+One&display=swap");
-@import url("https://fonts.googleapis.com/css?family=Montserrat:500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.heroContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heroTitle {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    font-family: 'Inter', sans-serif;
+}
+
+.brandText {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.heroSubtitle {
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+}
+
+.heroButtons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.primaryBtn, .secondaryBtn, .ctaBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+.primaryBtn {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.primaryBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.secondaryBtn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.secondaryBtn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Features Section */
+.features {
+    padding: 100px 0;
+    background: #f8f9fa;
+}
+
+.sectionTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 60px;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.featureCard {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.featureCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.featureIcon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.featureCard h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureCard p {
+    color: #6c757d;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureCard ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.featureCard li {
+    padding: 8px 0;
+    color: #495057;
+    position: relative;
+    padding-left: 25px;
+    font-family: 'Inter', sans-serif;
+}
+
+.featureCard li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Stats Section */
+.stats {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.statCard {
+    text-align: center;
+    padding: 20px;
+}
+
+.statNumber {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Inter', sans-serif;
+}
+
+.statLabel {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* CTA Section */
+.cta {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+}
+
+.cta h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.cta p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    font-family: 'Inter', sans-serif;
+}
+
+.ctaBtn {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    padding: 18px 40px;
+    font-size: 1.2rem;
+}
+
+.ctaBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: 2.5rem;
+    }
+    
+    .heroSubtitle {
+        font-size: 1.1rem;
+    }
+    
+    .heroButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .featureGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .statsGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .sectionTitle {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 2rem;
+    }
+    
+    .statsGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .featureCard {
+        padding: 30px 20px;
+    }
+    
+    .container {
+        padding: 0 15px;
+    }
+}
 
 .fade-in {
     margin-top: 60px;

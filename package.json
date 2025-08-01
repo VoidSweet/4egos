@@ -1,9 +1,19 @@
 {
+  "name": "aegisbot-dashboard",
+  "version": "1.0.0",
+  "description": "AegisBot Dashboard - Advanced Discord server management",
   "private": true,
   "scripts": {
-    "dev": "next",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "analyze": "cross-env ANALYZE=true next build",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
@@ -45,9 +55,19 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.4.5",
     "@types/jquery": "^3.5.9",
-    "@types/react": "^17.0.35",
+    "@types/node": "^24.1.0",
+    "@types/react": "^17.0.87",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "babel-plugin-styled-components": "^1.12.0",
-    "typescript": "^4.5.2"
+    "cross-env": "^10.0.0",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "^15.4.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "typescript": "^4.9.5"
   }
 }

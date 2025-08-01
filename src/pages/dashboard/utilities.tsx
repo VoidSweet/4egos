@@ -13,7 +13,7 @@ interface IProps {
     user: IUser;
 }
 
-export default function ConsoleDashboard({ user }: IProps) {
+export default function UtilitiesDashboard({ user }: IProps) {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
@@ -27,8 +27,8 @@ export default function ConsoleDashboard({ user }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Server Console</title>
-                <meta name="description" content="Advanced server monitoring and management console" />
+                <title>AegisBot Dashboard - Utilities</title>
+                <meta name="description" content="Essential server utilities and management tools" />
             </Head>
 
             <Header {...{user}} />
@@ -36,52 +36,52 @@ export default function ConsoleDashboard({ user }: IProps) {
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
-                    <h1>🖥️ Server Console</h1>
-                    <p>Real-time server monitoring, logs, and administrative controls.</p>
+                    <h1>🔧 Server Utilities</h1>
+                    <p>Essential tools for server management, automation, and member engagement.</p>
                 </div>
 
                 <div className={dashStyles.featureGrid}>
                     <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📊</div>
-                        <h3>Live Statistics</h3>
-                        <p>Real-time server performance monitoring</p>
+                        <div className={dashStyles.featureIcon}>🔔</div>
+                        <h3>Notification System</h3>
+                        <p>Smart notification and announcement management</p>
                         <div className={dashStyles.featureItems}>
-                            <span>Member activity</span>
-                            <span>Bot performance</span>
-                            <span>Server health</span>
+                            <span>Auto-announcements</span>
+                            <span>Event reminders</span>
+                            <span>Welcome messages</span>
                         </div>
                     </div>
 
                     <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📝</div>
-                        <h3>System Logs</h3>
-                        <p>Comprehensive logging and audit trails</p>
+                        <div className={dashStyles.featureIcon}>📋</div>
+                        <h3>Channel Management</h3>
+                        <p>Advanced channel creation and organization</p>
                         <div className={dashStyles.featureItems}>
-                            <span>Event logs</span>
-                            <span>Error tracking</span>
-                            <span>Admin actions</span>
+                            <span>Auto-channels</span>
+                            <span>Category organization</span>
+                            <span>Permission sync</span>
                         </div>
                     </div>
 
                     <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⚡</div>
-                        <h3>Quick Actions</h3>
-                        <p>Fast access to common administrative tasks</p>
+                        <div className={dashStyles.featureIcon}>⚙️</div>
+                        <h3>Server Tools</h3>
+                        <p>Comprehensive server maintenance utilities</p>
                         <div className={dashStyles.featureItems}>
+                            <span>Backup system</span>
                             <span>Bulk operations</span>
-                            <span>Emergency controls</span>
-                            <span>System commands</span>
+                            <span>Migration tools</span>
                         </div>
                     </div>
 
                     <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🔍</div>
-                        <h3>Advanced Search</h3>
-                        <p>Powerful search and filtering capabilities</p>
+                        <div className={dashStyles.featureIcon}>🎯</div>
+                        <h3>Custom Commands</h3>
+                        <p>Create and manage custom server commands</p>
                         <div className={dashStyles.featureItems}>
-                            <span>Member lookup</span>
-                            <span>Message search</span>
-                            <span>Event filtering</span>
+                            <span>Command builder</span>
+                            <span>Response templates</span>
+                            <span>Permission controls</span>
                         </div>
                     </div>
                 </div>
