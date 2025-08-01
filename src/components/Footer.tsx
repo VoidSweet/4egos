@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 import styles from '../styles/Footer.module.css';
 
@@ -15,7 +16,7 @@ export default class Footer extends React.Component {
                             Projeto desenvolvido por IsLuny representada por JVOPINHO (Bae). 
                             <br /> 
                             <br />
-                            © Bae.#7500 &amp; <a href='/team' style={{color: 'var(--luny-colors-band-100)'}}>Lunary Team</a>. 
+                            © Bae.#7500 &amp; <Link href='/team' style={{color: 'var(--luny-colors-band-100)'}}>Lunary Team</Link>. 
                             <br />
                             💜 2020 - {(new Date()).getFullYear()}
                         </p>
@@ -32,9 +33,9 @@ export default class Footer extends React.Component {
                         <li>
                             <h2>Legal</h2>
                             <ul className={styles['box']}>
-                                <li><a href={'/privacy'}>Privacy Policy</a></li>
-                                <li><a href={'/terms'}>Terms of Use</a></li>
-                                <li><a href={'/support'}>Contract</a></li>
+                                <li><Link href={'/privacy'}>Privacy Policy</Link></li>
+                                <li><Link href={'/terms'}>Terms of Use</Link></li>
+                                <li><Link href={'/support'}>Contract</Link></li>
                             </ul>
                         </li>
                         {/* <li className={styles['features']}>

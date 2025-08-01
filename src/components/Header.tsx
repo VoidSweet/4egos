@@ -42,7 +42,7 @@ export default class Header extends React.Component {
 
         return (
             <header className={styles["header"] + " " + styles["onTop"]}>
-                <a href='/'>
+                <Link href='/'>
                     <svg
                         className={styles["icon"]} 
                         version="1.1" 
@@ -60,12 +60,12 @@ export default class Header extends React.Component {
                             />
                         </g>
                     </svg>
-                </a>
+                </Link>
             
                 <div className={styles["links"]}>
-                    <a href="/commands" className={styles["link"]}>Comandos</a>
-                    <a href="/invite" className={styles["link"]}>Invite</a>
-                    <a href="/vote" className={styles["link"]}>Vote</a>
+                    <Link href="/commands" className={styles["link"]}>Comandos</Link>
+                    <Link href="/invite" className={styles["link"]}>Invite</Link>
+                    <Link href="/vote" className={styles["link"]}>Vote</Link>
                 </div>
                 <div id="avatar" className={styles["avatar"]}>
                     {user ? (
@@ -74,18 +74,18 @@ export default class Header extends React.Component {
                             <div className={styles["user-menu-wrapper"]}>
                                 <div className={styles["user-menu"]}>
                                     <div className={styles["user-menu-options"]}>
-                                        <a href={"/dashboard/@me"}>
+                                        <Link href={"/dashboard/@me"}>
                                             <div style={{marginTop: "0"}}>
                                                 <i className={"fas fa-tools"}></i>
                                                 Dashboard
                                             </div>
-                                        </a>
-                                        <a href={"/commands"}>
+                                        </Link>
+                                        <Link href={"/commands"}>
                                             <div>
                                                 <i className={"fas fa-project-diagram"}></i>
                                                 Comandos
                                             </div>
-                                        </a>
+                                        </Link>
                                         <a href={"/api/auth/logout"}>
                                             <div>
                                                 <i className={"fas fa-sign-out-alt"} style={{color: "var(--luny-colors-red)"}}></i>

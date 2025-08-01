@@ -14,9 +14,9 @@ export const config = {
     clientId: process.env.DISCORD_CLIENT_ID || '1398326650558742528',
     clientSecret: process.env.DISCORD_CLIENT_SECRET || '',
     redirectUri: process.env.DISCORD_REDIRECT_URI || 
-      (process.env.NODE_ENV === 'production' 
-        ? 'https://4egis.gr/api/auth/callback'
-        : 'http://localhost:3000/api/auth/callback'),
+      `${process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production' 
+        ? 'https://your-vercel-app.vercel.app'
+        : 'http://localhost:3000')}/api/auth/callback`,
   },
   
   // Bot configuration
