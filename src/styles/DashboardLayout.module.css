@@ -145,52 +145,14 @@
     margin: 0;
     font-family: 'Inter', sans-serif;
 }
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
 
-.featureCard:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-    text-decoration: none;
-    color: inherit;
-}
-
-.featureIcon {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.featureCard h3 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #2c3e50;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-}
-
-.featureCard p {
-    color: #6c757d;
-    margin-bottom: 20px;
-    line-height: 1.6;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-}
-
+/* Additional feature card styles */
 .featureItems {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+    margin-top: 1rem;
 }
 
 .featureItems span {
