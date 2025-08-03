@@ -6,7 +6,7 @@ import { parseCookies } from 'nookies';
 
 import LeftMenu from '../../../../components/LeftMenu';
 import LoadingPage from '../../../../components/LoadingPage';
-import Header from '../../../../components/Header';
+
 
 import styles from '../../../../styles/main.module.css';
 import guildStyles from '../../../../styles/guild.module.css';
@@ -100,7 +100,7 @@ export default class DashboardMe extends React.Component {
         return (
             <>
                 {loading && ( <LoadingPage {...{loading}} /> )}
-                <Header {...{user}}/>
+                
                 <LeftMenu {...{user, guild}}/>
                 {(() => {
                     if(logId) {

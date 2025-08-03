@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-import Header from '../../components/Header';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import Toggle, { CheckRadio } from '../../components/Toggle';
@@ -49,16 +48,74 @@ export default function SecurityDashboard({ user, config }: IProps) {
     const [loading, setLoading] = useState(true);
     const [securityConfig, setSecurityConfig] = useState<ISecurityConfig>(config);
     const [saving, setSaving] = useState(false);
+    const [selectedGuildId, setSelectedGuildId] = useState<string>('');
+    const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
     useEffect(() => {
+        // Fetch user's guilds for server selection
+        const fetchGuilds = async () => {
+            try {
+                const response = await fetch('/api/discord/guilds');
+                if (response.ok) {
+                    const guilds = await response.json();
+                    setUserGuilds(guilds.filter((g: any) => g.permissions_new & 0x20)); // MANAGE_GUILD permission
+                }
+            } catch (error) {
+                console.error('Failed to fetch guilds:', error);
+            }
+        };
+        fetchGuilds();
         setTimeout(() => setLoading(false), 1000);
     }, []);
 
+    const handleGuildSelect = async (guildId: string) => {
+        setSelectedGuildId(guildId);
+        setLoading(true);
+        
+        try {
+            // Fetch guild-specific security configuration
+            const response = await fetch(`/api/guilds/${guildId}/security`);
+            
+            if (response.ok) {
+                const guildConfig = await response.json();
+                setSecurityConfig(guildConfig);
+            }
+        } catch (error) {
+            console.error('Failed to fetch guild security config:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const isConfigDisabled = !selectedGuildId;
+
     const handleSave = async () => {
+        if (!selectedGuildId) {
+            alert('Please select a server first!');
+            return;
+        }
+
         setSaving(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setSaving(false);
+        try {
+            const response = await fetch(`/api/guilds/${selectedGuildId}/security`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(securityConfig)
+            });
+
+            if (response.ok) {
+                alert('Security settings saved successfully!');
+            } else {
+                throw new Error('Failed to save settings');
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            alert('Failed to save settings. Please try again.');
+        } finally {
+            setSaving(false);
+        }
     };
 
     if (loading) {
@@ -72,13 +129,34 @@ export default function SecurityDashboard({ user, config }: IProps) {
                 <meta name="description" content="Comprehensive security management for Discord servers" />
             </Head>
 
-            <Header {...{user}} />
-            <LeftMenu {...{user}} />
+            <LeftMenu {...{user}} saveButton={!!selectedGuildId} onSave={handleSave} saving={saving} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>🛡️ Security Management</h1>
                     <p>Protect your Discord server with advanced security features and monitoring.</p>
+                </div>
+
+                {/* Server Selection */}
+                <div className={dashStyles.serverSelection}>
+                    <h3>Select a Server to Configure:</h3>
+                    <select 
+                        value={selectedGuildId} 
+                        onChange={(e) => handleGuildSelect(e.target.value)}
+                        className={dashStyles.serverSelect}
+                    >
+                        <option value="">Choose a server...</option>
+                        {userGuilds.map(guild => (
+                            <option key={guild.id} value={guild.id}>
+                                {guild.name}
+                            </option>
+                        ))}
+                    </select>
+                    {!selectedGuildId && (
+                        <p className={dashStyles.helpText}>
+                            ⚠️ Please select a server to configure security settings.
+                        </p>
+                    )}
                 </div>
 
                 {/* Security Overview Stats */}
@@ -126,6 +204,7 @@ export default function SecurityDashboard({ user, config }: IProps) {
                             <CheckRadio>
                                 <Toggle 
                                     defaultChecked={securityConfig.antiNuke.enabled}
+                                    disabled={isConfigDisabled}
                                     onChange={(checked) => setSecurityConfig(prev => ({
                                         ...prev,
                                         antiNuke: { ...prev.antiNuke, enabled: checked }
@@ -140,6 +219,7 @@ export default function SecurityDashboard({ user, config }: IProps) {
                             <CheckRadio>
                                 <Toggle 
                                     defaultChecked={securityConfig.antiNuke.autoQuarantine}
+                                    disabled={isConfigDisabled}
                                     onChange={(checked) => setSecurityConfig(prev => ({
                                         ...prev,
                                         antiNuke: { ...prev.antiNuke, autoQuarantine: checked }

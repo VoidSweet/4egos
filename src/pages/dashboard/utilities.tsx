@@ -2,7 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-import Header from '../../components/Header';
+
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
@@ -31,7 +31,7 @@ export default function UtilitiesDashboard({ user }: IProps) {
                 <meta name="description" content="Essential server utilities and management tools" />
             </Head>
 
-            <Header {...{user}} />
+            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>

@@ -7,6 +7,8 @@ interface IProps {
     user: IUser;
     guild?: IGuild;
     saveButton?: boolean;
+    onSave?: () => void;
+    saving?: boolean;
 }
 
 const _urls = {
@@ -55,9 +57,9 @@ const _urls = {
     }
 } 
 
-export default class Header extends React.Component {
+export default class Header extends React.Component<IProps> {
     render() {
-        const { user, guild = null, saveButton = false } = this.props as IProps;
+        const { user, guild = null, saveButton = false, onSave, saving = false } = this.props;
 
         const name = guild?.name || user?.username
         const id = guild?.id || user?.id
@@ -123,9 +125,17 @@ export default class Header extends React.Component {
                         </div>
 
                         {saveButton == true && (
-                            <div className={styles['save-button']} id={'save-button'}>
-                                <i className={'fas fa-spinner-third'} />
-                                <p>Save</p>
+                            <div 
+                                className={styles['save-button']} 
+                                id={'save-button'}
+                                onClick={onSave}
+                                style={{ 
+                                    cursor: onSave ? 'pointer' : 'default',
+                                    opacity: saving ? 0.6 : 1
+                                }}
+                            >
+                                <i className={saving ? 'fas fa-spinner fa-spin' : 'fas fa-save'} />
+                                <p>{saving ? 'Saving...' : 'Save'}</p>
                             </div>
                         )}
                     </div>

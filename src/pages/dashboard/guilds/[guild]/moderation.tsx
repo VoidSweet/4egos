@@ -6,7 +6,7 @@ import { parseCookies } from 'nookies';
 
 import LeftMenu from '../../../../components/LeftMenu';
 import LoadingPage from '../../../../components/LoadingPage';
-import Header from '../../../../components/Header';
+
 import Select, { Option } from '../../../../components/Select';
 import Toggle, { CheckRadio } from '../../../../components/Toggle';
 
@@ -48,7 +48,7 @@ export default class DashboardMe extends React.Component {
         return (
             <>
                 <LoadingPage {...{loading}} />
-                <Header {...{user}}/>
+                
                 <LeftMenu {...{user, guild, saveButton: true}}/>
 
                 <div className={`${styles['content']}`}>

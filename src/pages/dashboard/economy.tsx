@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-import Header from '../../components/Header';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import Toggle, { CheckRadio } from '../../components/Toggle';
@@ -83,7 +82,6 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
                 <meta name="description" content="Comprehensive economy management for Discord servers" />
             </Head>
 
-            <Header {...{user}} />
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
