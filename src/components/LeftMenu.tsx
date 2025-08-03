@@ -14,13 +14,18 @@ const _urls = {
         general: [
             {
                 name: 'Home',
-                url: '/dashboard/@me',
+                url: '/dashboard',
                 icon: 'fad fa-home'
             },
             {
-                name: 'Servidores',
+                name: 'Server Management',
                 url: '/dashboard/guilds',
-                icon: 'fad fa-grip-vertical'
+                icon: 'fad fa-server'
+            },
+            {
+                name: 'My Profile',
+                url: '/dashboard/@me',
+                icon: 'fad fa-user'
             }
         ]
     },
@@ -32,17 +37,17 @@ const _urls = {
                 icon: 'fad fa-home'
             },
             {
-                name: 'Moderação',
+                name: 'Moderation',
                 url: '/dashboard/guilds/[guild]/moderation',
                 icon: 'fad fa-hammer'
             },
             {
-                name: "Permissões",
+                name: "Permissions",
                 url: "/dashboard/guilds/[guild]/permissions",
-                icon: "fad fa-briefcase"
+                icon: "fad fa-shield-alt"
             },
             {
-                name: "Modlogs",
+                name: "Mod Logs",
                 url: "/dashboard/guilds/[guild]/modlogs",
                 icon: "fad fa-clipboard-list"
             }

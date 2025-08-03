@@ -12,26 +12,33 @@ import { IUser } from '../../../types';
 
 interface IProps {
     user: IUser;
+    realUser: any;
 }
 
-export default function DashboardMe({ user }: IProps) {
+export default function DashboardMe({ user, realUser }: IProps) {
     const [loading, setLoading] = React.useState(true);
     const [userStats, setUserStats] = React.useState({
-        totalXP: 12847,
-        level: 23,
-        messagesCount: 2341,
-        voiceTime: '142h 23m',
-        serversCount: 3,
-        achievements: ['First Message', 'Voice Chat Hero', 'Level 20 Milestone']
+        totalXP: 15847,
+        level: 28,
+        messagesCount: 3421,
+        voiceTime: '187h 42m',
+        serversCount: realUser?.guilds?.length || 5,
+        achievements: ['Welcome Aboard', 'Community Member', 'Active User', 'Voice Chat Pro']
     });
 
     React.useEffect(() => {
         // Simulate loading user data
-        setTimeout(() => setLoading(false), 1000);
+        setTimeout(() => setLoading(false), 800);
         
-        // In a real application, you would fetch user stats from your API
-        // fetchUserStats(user.id).then(setUserStats);
+        // Fetch user stats from API
+        // fetchUserStats(realUser.id).then(setUserStats);
     }, []);
+
+    if (loading) {
+        return <LoadingPage {...{loading}} />;
+    }
+
+    const displayUser = realUser || user;
 
     if (loading) {
         return <LoadingPage {...{loading}} />;
@@ -40,8 +47,8 @@ export default function DashboardMe({ user }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - My Profile</title>
-                <meta name="description" content="Your personal AegisBot profile and statistics" />
+                <title>4EgosBot Dashboard - My Profile</title>
+                <meta name="description" content="Your personal 4EgosBot profile and statistics" />
             </Head>
 
             <Header {...{user}} />
@@ -50,26 +57,39 @@ export default function DashboardMe({ user }: IProps) {
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>👤 My Profile</h1>
-                    <p>Your personal AegisBot statistics and achievements</p>
+                    <p>Your personal 4EgosBot statistics and achievements</p>
                 </div>
 
                 <div className={userStyles.profileContainer}>
                     <div className={userStyles.infoCard}>
                         <div className={userStyles.userAvatar}>
                             <img 
-                                src={user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`}
-                                alt={`${user.username}'s avatar`}
+                                src={displayUser.avatar ? `https://cdn.discordapp.com/avatars/${displayUser.id}/${displayUser.avatar}.png?size=256` : `https://cdn.discordapp.com/embed/avatars/${(parseInt(displayUser.discriminator || '0001') % 5)}.png`}
+                                alt={`${displayUser.username}'s avatar`}
                             />
                         </div>
                         <div className={userStyles.userInfo}>
-                            <h2>{user.username}#{user.discriminator}</h2>
-                            <p>Level {userStats.level} • {userStats.totalXP} XP</p>
+                            <h2>{displayUser.global_name || displayUser.username}</h2>
+                            <p className={userStyles.userTag}>@{displayUser.username}#{displayUser.discriminator}</p>
+                            <p className={userStyles.levelInfo}>Level {userStats.level} • {userStats.totalXP.toLocaleString()} XP</p>
                             <div className={userStyles.xpBar}>
                                 <div 
                                     className={userStyles.xpProgress}
                                     style={{ width: `${(userStats.totalXP % 1000) / 10}%` }}
                                 ></div>
                             </div>
+                        </div>
+                        <div className={userStyles.userBadges}>
+                            {displayUser.premium_type && (
+                                <div className={userStyles.badge}>
+                                    💎 Nitro
+                                </div>
+                            )}
+                            {displayUser.verified && (
+                                <div className={userStyles.badge}>
+                                    ✅ Verified
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -126,14 +146,18 @@ export default function DashboardMe({ user }: IProps) {
 
                         <div className={dashStyles.featureCard}>
                             <div className={dashStyles.featureIcon}>🔗</div>
-                            <h3>Connected Accounts</h3>
+                            <h3>Account Info</h3>
                             <div className={userStyles.connectionsList}>
                                 <div className={userStyles.connectionItem}>
-                                    <span>🎮 Discord</span>
-                                    <span className={userStyles.connected}>Connected</span>
+                                    <span>🎮 Discord ID</span>
+                                    <span className={userStyles.userId}>{displayUser.id}</span>
                                 </div>
                                 <div className={userStyles.connectionItem}>
-                                    <span>🤖 AegisBot</span>
+                                    <span>🌍 Locale</span>
+                                    <span className={userStyles.connected}>{displayUser.locale || 'en-US'}</span>
+                                </div>
+                                <div className={userStyles.connectionItem}>
+                                    <span>🤖 4EgosBot</span>
                                     <span className={userStyles.connected}>Active</span>
                                 </div>
                             </div>
@@ -159,22 +183,40 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 
-    // In a real application, you would decode the token and fetch user data
+    let realUser = null;
+    
+    try {
+        // Fetch real user data from Discord API
+        const userResponse = await fetch('https://discord.com/api/users/@me', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        
+        if (userResponse.ok) {
+            realUser = await userResponse.json();
+        }
+    } catch (error) {
+        console.error('Failed to fetch Discord user data:', error);
+    }
+
+    // Fallback mock user data
     const mockUser: IUser = {
-        id: "123456789",
-        username: "AegisUser",
-        discriminator: "0001",
-        avatar: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
-        verified: true,
-        mfa_enabled: true,
-        locale: "en-US",
-        flags: 0,
-        public_flags: 0
+        id: realUser?.id || "123456789",
+        username: realUser?.username || "User",
+        discriminator: realUser?.discriminator || "0001",
+        avatar: realUser?.avatar || null,
+        verified: realUser?.verified || true,
+        mfa_enabled: realUser?.mfa_enabled || false,
+        locale: realUser?.locale || "en-US",
+        flags: realUser?.flags || 0,
+        public_flags: realUser?.public_flags || 0
     };
 
     return {
         props: {
-            user: mockUser
+            user: mockUser,
+            realUser: realUser || mockUser
         }
     };
 };

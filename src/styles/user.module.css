@@ -1,158 +1,239 @@
 .profileContainer {
-    padding: 20px;
-    max-width: 1200px;
+    padding: 2rem;
+    max-width: 1400px;
     margin: 0 auto;
+    min-height: 100vh;
 }
 
 .infoCard {
     position: relative;
     width: 100%;
     height: auto;
-    margin: 20px 0;
-    padding: 30px;
+    margin: 2rem 0;
+    padding: 2.5rem;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
     color: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 2rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.infoCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 80px rgba(99, 102, 241, 0.4);
 }
 
 .userAvatar {
     flex-shrink: 0;
+    position: relative;
 }
 
 .userAvatar img {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.userAvatar:hover img {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
 }
 
 .userInfo h2 {
-    margin: 0 0 10px 0;
-    font-size: 28px;
-    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.userInfo p {
-    margin: 0 0 15px 0;
+.userTag {
+    margin: 0 0 0.5rem 0;
+    opacity: 0.8;
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.levelInfo {
+    margin: 0 0 1rem 0;
     opacity: 0.9;
-    font-size: 16px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.userBadges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .xpBar {
     width: 100%;
-    height: 8px;
+    max-width: 300px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    border-radius: 10px;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .xpProgress {
     height: 100%;
-    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-    border-radius: 4px;
+    background: linear-gradient(90deg, #ffffff 0%, #f1f5f9 100%);
+    border-radius: 10px;
     transition: width 0.3s ease;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .statsList {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
 }
 
 .statItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
-.statItem:last-child {
-    border-bottom: none;
+.statItem:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
 }
 
 .statItem span {
-    color: #666;
+    font-size: 0.95rem;
+    opacity: 0.8;
 }
 
 .statItem strong {
-    color: #333;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #a855f7;
 }
 
 .achievementsList {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.75rem;
 }
 
 .achievementItem {
-    padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
     color: white;
-    border-radius: 8px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.achievementItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
 }
 
 .preferencesList {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
 }
 
 .preferenceItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.preferenceItem:last-child {
-    border-bottom: none;
-}
-
-.toggleButton {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 20px;
-    background: #4facfe;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
 
+.preferenceItem:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toggleButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
 .toggleButton:hover {
-    background: #2196f3;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
     transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
 .connectionsList {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
 }
 
 .connectionItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
-.connectionItem:last-child {
-    border-bottom: none;
+.connectionItem:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
 }
 
 .connected {
-    color: #4caf50;
-    font-weight: 600;
+    color: #10b981;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.userId {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
 }
 
 /* Legacy styles for compatibility */

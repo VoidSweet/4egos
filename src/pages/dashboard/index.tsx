@@ -38,8 +38,8 @@ export default function DashboardHome({ user, stats }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Overview</title>
-                <meta name="description" content="AegisBot dashboard overview and statistics" />
+                <title>4EgosBot Dashboard - Overview</title>
+                <meta name="description" content="4EgosBot dashboard overview and statistics" />
             </Head>
 
             <Header {...{user}} />
@@ -48,7 +48,7 @@ export default function DashboardHome({ user, stats }: IProps) {
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>🎛️ Dashboard Overview</h1>
-                    <p>Welcome back! Here's what's happening with your Discord servers.</p>
+                    <p>Welcome back! Here's what's happening with 4EgosBot</p>
                 </div>
 
                 {/* Quick Stats */}
