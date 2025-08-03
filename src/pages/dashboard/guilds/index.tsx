@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetServerSideProps } from 'next'
-import socket from 'socket.io-client';
 import { parseCookies } from 'nookies';
 
 import LeftMenu from '../../../components/LeftMenu';
@@ -24,10 +23,9 @@ interface IState {
 interface IProps {
     theme: string;
     token: string;
-    hostApi: string;
 };
 
-export default class DashboardMe extends React.Component {
+export default class DashboardGuilds extends React.Component {
     constructor(props) {
         super(props);
 
@@ -38,32 +36,64 @@ export default class DashboardMe extends React.Component {
         } as IState;
     }
 
-    componentDidMount(): void {
-        const { token, hostApi } = this.props as IProps;
+    async componentDidMount(): Promise<void> {
+        const { token } = this.props as IProps;
 
-        const api = socket(hostApi, {
-            query: {
-                token,
-                fetchGuilds: true
-            },
-        });
+        try {
+            // Fetch user data
+            const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-        api.on('ready', ({ data }) => {
-            console.log(data)
+            if (!userResponse.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+
+            const userData = await userResponse.json();
+
+            // Fetch user guilds
+            const guildsResponse = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!guildsResponse.ok) {
+                throw new Error('Failed to fetch guilds data');
+            }
+
+            const guildsData = await guildsResponse.json();
+
+            // Convert Discord guild data to our format
+            const formattedGuilds = guildsData.map(guild => ({
+                id: guild.id,
+                name: guild.name,
+                icon: guild.icon,
+                owner: guild.owner,
+                permissions: parseInt(guild.permissions),
+                features: guild.features || []
+            }));
+
             this.setState({
-                user: data.user,
-                guilds: data.guilds,
+                user: {
+                    id: userData.id,
+                    username: userData.username,
+                    discriminator: userData.discriminator,
+                    avatar: userData.avatar,
+                    verified: userData.verified,
+                    premium_type: userData.premium_type
+                },
+                guilds: formattedGuilds,
                 loading: false,
             });
-        });
 
-        api.on('error', ({ data }) => {
-            console.log(data);
-
-            if(!data?.message || `${data.message}`.toLowerCase().includes('token')) {
-                return window.location.href = '/api/auth/login?dt=true';
-            };
-        });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // Redirect to login if token is invalid
+            window.location.href = '/api/auth/login?dt=true';
+        }
     }
 
     render() {
@@ -99,7 +129,6 @@ export const getServerSideProps: GetServerSideProps = async(ctx) => {
     return {
         props: {
             token,
-            hostApi: process.env.HOST_API,
         },
     };
 }

@@ -266,31 +266,70 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 
-    // Mock data - in production, this would come from your API
-    const mockStats: IDashboardStats = {
-        totalServers: 15420,
-        totalUsers: 2847391,
-        securityAlerts: 3,
-        economyTransactions: 156789,
-        uptime: "99.9%"
-    };
+    try {
+        // Fetch real user data from Discord
+        const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-    const mockUser: IUser = {
-        id: "123456789",
-        username: "AegisAdmin",
-        discriminator: "0001",
-        avatar: null,
-        verified: true,
-        mfa_enabled: true,
-        locale: "en-US",
-        flags: 0,
-        public_flags: 0
-    };
-
-    return {
-        props: {
-            user: mockUser,
-            stats: mockStats
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user data');
         }
-    };
+
+        const userData = await userResponse.json();
+
+        // Fetch user guilds to get server count
+        const guildsResponse = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        let userGuildCount = 0;
+        if (guildsResponse.ok) {
+            const guildsData = await guildsResponse.json();
+            userGuildCount = guildsData.length;
+        }
+
+        // Mock stats with some real data
+        const mockStats: IDashboardStats = {
+            totalServers: userGuildCount, // Real user guild count
+            totalUsers: 2847391, // Keep mock for global stats
+            securityAlerts: Math.floor(Math.random() * 5), // Random 0-4
+            economyTransactions: 156789 + Math.floor(Math.random() * 1000),
+            uptime: "99.9%"
+        };
+
+        const user: IUser = {
+            id: userData.id,
+            username: userData.username,
+            discriminator: userData.discriminator,
+            avatar: userData.avatar,
+            verified: userData.verified,
+            mfa_enabled: userData.mfa_enabled,
+            locale: userData.locale,
+            flags: userData.flags,
+            public_flags: userData.public_flags
+        };
+
+        return {
+            props: {
+                user,
+                stats: mockStats
+            }
+        };
+
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        
+        // Fallback to login redirect if API calls fail
+        return {
+            redirect: {
+                destination: '/api/auth/login',
+                permanent: false,
+            }
+        };
+    }
 };
