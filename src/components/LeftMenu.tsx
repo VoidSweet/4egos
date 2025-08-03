@@ -91,9 +91,9 @@ export default class Header extends React.Component {
 
         return (
             <>
-                <div className={styles['left-column']}>
-                    <div className={styles['menu']}>
-                        <div className={styles['user']}>
+                <div className={styles['top-panel']}>
+                    <div className={styles['panel-content']}>
+                        <div className={styles['user-section']}>
                             <span className={styles['avatar']}>
                                 {iconComponent()}
                             </span>
@@ -101,27 +101,31 @@ export default class Header extends React.Component {
                                 <p>{name || '...'}</p>
                             </div>
                         </div>
-                        {urls.map(([k, v]) => {
-                            return (
-                                <main key={k}>
-                                    <p className={styles['stack']}>{k.toLocaleUpperCase()}</p>
-                                    <div className={styles['border']}>
-                                        {v.map(({ name, url, icon}) => {
-                                            return (
-                                                <a href={url.replace('[guild]', guild?.id)} className={styles['link']} key={url}>
-                                                    <p><i className={icon}></i>{name}</p>
-                                                </a>
-                                            )
-                                        })}
+                        
+                        <div className={styles['navigation-section']}>
+                            {urls.map(([k, v]) => {
+                                return (
+                                    <div key={k} className={styles['nav-group']}>
+                                        <span className={styles['nav-label']}>{k.toLocaleUpperCase()}</span>
+                                        <div className={styles['nav-links']}>
+                                            {v.map(({ name, url, icon}) => {
+                                                return (
+                                                    <a href={url.replace('[guild]', guild?.id)} className={styles['nav-link']} key={url}>
+                                                        <i className={icon}></i>
+                                                        <span>{name}</span>
+                                                    </a>
+                                                )
+                                            })}
+                                        </div>
                                     </div>
-                                </main>
-                            )
-                        })}
+                                )
+                            })}
+                        </div>
 
                         {saveButton == true && (
                             <div className={styles['save-button']} id={'save-button'}>
                                 <i className={'fas fa-spinner-third'} />
-                                <p>Salvar</p>
+                                <p>Save</p>
                             </div>
                         )}
                     </div>
