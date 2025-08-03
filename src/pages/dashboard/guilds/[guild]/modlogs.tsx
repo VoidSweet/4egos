@@ -182,7 +182,7 @@ export default class DashboardMe extends React.Component {
                         <table className={guildStyles['cards-log']}>
                             <thead>
                                 <tr>
-                                    <th>Usuário</th>
+                                    <th>User</th>
                                     <th>Autor</th>
                                     <th>Ação</th>
                                     <th>Data</th>

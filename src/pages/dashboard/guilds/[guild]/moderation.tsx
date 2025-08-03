@@ -88,7 +88,7 @@ export default class DashboardMe extends React.Component {
                         <br />
                         <p>
                             Canal onde será enviado as mensagem de modlogs. <a href="https://imgur.com/eUWWLQ8.png"><code>Exemplo</code></a>
-                            <br /><code style={{color: "var(--luny-colors-green)"}}>+ Mostra autor, usuário, motivo, id e link para log punição</code>, 
+                            <br /><code style={{color: "var(--luny-colors-green)"}}>+ Shows author, user, reason, id and link to punishment log</code>, 
                             <br /><code style={{color: "var(--luny-colors-red)"}}>- Não é possível customizar</code>
                         </p>
                     </div>
@@ -142,7 +142,7 @@ export default class DashboardMe extends React.Component {
                                 data-value={GuildConfigs.MANDATORY_REASON}
                                 defaultChecked={(guild?.configs & GuildConfigs.MANDATORY_REASON) == GuildConfigs.MANDATORY_REASON}
                             /> <label style={{marginLeft: '0.8%', fontSize: '18px'}}><strong>Tornar obrigatório ter um motivo para as punições</strong></label></p>
-                            <p>Permitir que uma punição usando a Lunar só possa ser efetuada com um motivo especificado.<br />Essa opção só ira ser aplicada para usuários que não possuem um cargo com a permissão <code>Punir sem motivo</code>.</p>
+                            <p>Allow that a punishment using Lunar can only be applied with a specified reason.<br />This option will only be applied for users who do not have a role with the permission <code>Punish without reason</code>.</p>
                         </CheckRadio>
                     
                         <hr />

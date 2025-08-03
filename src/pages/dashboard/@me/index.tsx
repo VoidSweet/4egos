@@ -51,7 +51,6 @@ export default function DashboardMe({ user, realUser }: IProps) {
                 <meta name="description" content="Your personal 4EgosBot profile and statistics" />
             </Head>
 
-            <Header {...{user}} />
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>

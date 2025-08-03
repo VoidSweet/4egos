@@ -4,7 +4,6 @@ import { parseCookies } from 'nookies';
 
 import LeftMenu from '../../../components/LeftMenu';
 import LoadingPage from '../../../components/LoadingPage';
-import Header from '../../../components/Header';
 import GuildCard from '../../../components/GuildCard';
 
 import styles from '../../../styles/main.module.css';
@@ -94,8 +93,15 @@ export default class DashboardGuilds extends React.Component {
 
         } catch (error) {
             console.error('Error fetching data:', error);
+            this.setState({
+                loading: false,
+                user: null,
+                guilds: []
+            });
             // Redirect to login if token is invalid
-            window.location.href = '/api/auth/login?dt=true';
+            setTimeout(() => {
+                window.location.href = '/api/auth/login?dt=true';
+            }, 2000);
         }
     }
 
@@ -105,7 +111,6 @@ export default class DashboardGuilds extends React.Component {
         return (
             <>
                 <LoadingPage {...{loading}} />
-                <Header {...{user}}/>
                 <LeftMenu {...{user}}/>
 
                 <div className={`${styles['content']}`}>

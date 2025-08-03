@@ -63,7 +63,7 @@ export default class Header extends React.Component {
                 </Link>
             
                 <div className={styles["links"]}>
-                    <Link href="/commands" className={styles["link"]}>Comandos</Link>
+                    <Link href="/commands" className={styles["link"]}>Commands</Link>
                     <Link href="/invite" className={styles["link"]}>Invite</Link>
                     <Link href="/vote" className={styles["link"]}>Vote</Link>
                 </div>
@@ -83,7 +83,7 @@ export default class Header extends React.Component {
                                         <Link href={"/commands"}>
                                             <div>
                                                 <i className={"fas fa-project-diagram"}></i>
-                                                Comandos
+                                                Commands
                                             </div>
                                         </Link>
                                         <a href={"/api/auth/logout"}>
@@ -101,7 +101,7 @@ export default class Header extends React.Component {
                                             />
                                             <h3>
                                                 <i className='far fa-browser' />
-                                                Mudar o tema da página:
+                                                Change page theme:
                                             </h3>
                                             <CheckRadio>
                                                 <Toggle

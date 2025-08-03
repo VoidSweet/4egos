@@ -42,7 +42,6 @@ export default function DashboardHome({ user, stats }: IProps) {
                 <meta name="description" content="4EgosBot dashboard overview and statistics" />
             </Head>
 
-            <Header {...{user}} />
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
