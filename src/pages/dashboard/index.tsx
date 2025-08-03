@@ -56,32 +56,32 @@ export default function DashboardHome({ user, stats }: IProps) {
                     <div className={dashStyles.statCard}>
                         <div className={dashStyles.statIcon}>🛡️</div>
                         <div className={dashStyles.statContent}>
-                            <h3>{stats.totalServers.toLocaleString()}</h3>
-                            <p>Protected Servers</p>
+                            <h3>{stats.totalServers}</h3>
+                            <p>Your Discord Servers</p>
                         </div>
                     </div>
 
                     <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>👥</div>
+                        <div className={dashStyles.statIcon}>🤖</div>
                         <div className={dashStyles.statContent}>
-                            <h3>{stats.totalUsers.toLocaleString()}</h3>
-                            <p>Total Users</p>
+                            <h3>4EgosBot</h3>
+                            <p>Status: {stats.uptime}</p>
                         </div>
                     </div>
 
                     <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>🚨</div>
+                        <div className={dashStyles.statIcon}>�</div>
                         <div className={dashStyles.statContent}>
-                            <h3>{stats.securityAlerts}</h3>
-                            <p>Security Alerts</p>
+                            <h3>{user.verified ? 'Verified' : 'Standard'}</h3>
+                            <p>Account Type</p>
                         </div>
                     </div>
 
                     <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>💰</div>
+                        <div className={dashStyles.statIcon}>�</div>
                         <div className={dashStyles.statContent}>
-                            <h3>{stats.economyTransactions.toLocaleString()}</h3>
-                            <p>Economy Transactions</p>
+                            <h3>{user.mfa_enabled ? 'Secured' : 'Basic'}</h3>
+                            <p>Security Level</p>
                         </div>
                     </div>
                 </div>
@@ -167,55 +167,55 @@ export default function DashboardHome({ user, stats }: IProps) {
                     </Link>
                 </div>
 
-                {/* Recent Activity */}
+                {/* Recent Activity - Using Real Discord Data */}
                 <div className={dashStyles.activitySection}>
-                    <h2>📊 Recent Activity</h2>
+                    <h2>🎛️ Your Discord Overview</h2>
                     <div className={dashStyles.activityGrid}>
                         <div className={dashStyles.activityCard}>
-                            <h4>🔐 Security Events</h4>
+                            <h4>� Account Information</h4>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>2 min ago</span>
-                                <span>Spam attempt blocked in #general</span>
+                                <span className={dashStyles.activityTime}>Username</span>
+                                <span>{user.username}#{user.discriminator}</span>
                             </div>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>15 min ago</span>
-                                <span>User added to whitelist</span>
+                                <span className={dashStyles.activityTime}>User ID</span>
+                                <span>{user.id}</span>
                             </div>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>1 hour ago</span>
-                                <span>Anti-nuke protection triggered</span>
-                            </div>
-                        </div>
-
-                        <div className={dashStyles.activityCard}>
-                            <h4>💎 Economy Activity</h4>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>5 min ago</span>
-                                <span>User completed daily bonus</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>30 min ago</span>
-                                <span>Shop item purchased</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>2 hours ago</span>
-                                <span>Bank deposit made</span>
+                                <span className={dashStyles.activityTime}>Verified</span>
+                                <span>{user.verified ? '✅ Verified' : '❌ Not Verified'}</span>
                             </div>
                         </div>
 
                         <div className={dashStyles.activityCard}>
-                            <h4>🎯 Moderation Log</h4>
+                            <h4>�️ Security Features</h4>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>10 min ago</span>
-                                <span>Warning issued for spam</span>
+                                <span className={dashStyles.activityTime}>2FA</span>
+                                <span>{user.mfa_enabled ? '🔒 Enabled' : '⚠️ Disabled'}</span>
                             </div>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>45 min ago</span>
-                                <span>User timeout expired</span>
+                                <span className={dashStyles.activityTime}>Server Count</span>
+                                <span>{stats.totalServers} servers</span>
                             </div>
                             <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>3 hours ago</span>
-                                <span>Message deleted by automod</span>
+                                <span className={dashStyles.activityTime}>Locale</span>
+                                <span>{user.locale || 'en-US'}</span>
+                            </div>
+                        </div>
+
+                        <div className={dashStyles.activityCard}>
+                            <h4>🎯 Quick Actions</h4>
+                            <div className={dashStyles.activityItem}>
+                                <span className={dashStyles.activityTime}>🏠</span>
+                                <span><a href="/dashboard">Dashboard Home</a></span>
+                            </div>
+                            <div className={dashStyles.activityItem}>
+                                <span className={dashStyles.activityTime}>⚙️</span>
+                                <span><a href="/dashboard/guilds">Manage Servers</a></span>
+                            </div>
+                            <div className={dashStyles.activityItem}>
+                                <span className={dashStyles.activityTime}>👤</span>
+                                <span><a href="/dashboard/@me">My Profile</a></span>
                             </div>
                         </div>
                     </div>
@@ -293,13 +293,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             userGuildCount = guildsData.length;
         }
 
-        // Mock stats with some real data
-        const mockStats: IDashboardStats = {
+        // Real stats using Discord API data
+        const realStats: IDashboardStats = {
             totalServers: userGuildCount, // Real user guild count
-            totalUsers: 2847391, // Keep mock for global stats
-            securityAlerts: Math.floor(Math.random() * 5), // Random 0-4
-            economyTransactions: 156789 + Math.floor(Math.random() * 1000),
-            uptime: "99.9%"
+            totalUsers: 0, // We can't get global user count from Discord API
+            securityAlerts: 0, // Real bot would track this
+            economyTransactions: 0, // Real bot would track this  
+            uptime: "Online" // Bot status
         };
 
         const user: IUser = {
@@ -317,7 +317,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         return {
             props: {
                 user,
-                stats: mockStats
+                stats: realStats
             }
         };
 
