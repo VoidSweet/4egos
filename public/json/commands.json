@@ -2,7 +2,7 @@
     "commands": [
         {
             "name": "aboutme",
-            "description": "Altere seu \"Sobre Mim\" no meu comando de perfil!.",
+            "description": "Change your \"About Me\" in my profile command!",
             "lunyDiscordPermissions": null,
             "botUserPermissions": null,
             "userDiscordPermissions": null,
@@ -14,7 +14,7 @@
         },
         {
             "name": "adv",
-            "description": "Aplica uma advertência/aviso em um usuário do servidor.",
+            "description": "Apply a warning/notice to a server user.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_ADV_MEMBERS"
@@ -25,19 +25,19 @@
             "dm": true,
             "examples": [
                 {
-                    "title": "Pune um usuário usando a menção.",
+                    "title": "Punish a user using mention.",
                     "usage": "user user:{@user}"
                 },
                 {
-                    "title": "Pune um usuário usando o id.",
+                    "title": "Punish a user using their ID.",
                     "usage": "user user:{userID}"
                 },
                 {
-                    "title": "Pune um usuário usando com um motivo.",
+                    "title": "Punish a user with a reason.",
                     "usage": "user user:{@user} reason:{reason}"
                 },
                 {
-                    "title": "Pune um usuário sem notificar via dm.",
+                    "title": "Punish a user without DM notification.",
                     "usage": "user user:{@user} notify-dm:{notify-dm}"
                 }
             ],
@@ -45,7 +45,7 @@
         },
         {
             "name": "adv edit",
-            "description": "Edita o motivo de uma advertência/aviso do servidor.",
+            "description": "Edit the reason for a warning/notice on the server.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_MANAGE_HISTORY"
@@ -83,7 +83,7 @@
         },
         {
             "name": "adv list",
-            "description": "Exibe as advertências/avisos de um usuário no servidor.",
+            "description": "Display warnings/notices for a user on the server.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_ADV_MEMBERS"
@@ -94,7 +94,7 @@
             "dm": false,
             "examples": [
                 {
-                    "title": "Exibe as informações de uma advertência de um usuário.",
+                    "title": "Display information about a user's warning.",
                     "usage": "user:{@user}"
                 }
             ],
@@ -102,7 +102,7 @@
         },
         {
             "name": "adv remove id",
-            "description": "Remove uma advertência/aviso do histórico servidor.",
+            "description": "Remove a warning/notice from server history.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_MANAGE_HISTORY"
@@ -121,7 +121,7 @@
         },
         {
             "name": "adv remove user",
-            "description": "Remove as advertências/avisos de um usuário do servidor.",
+            "description": "Remove warnings/notices for a user from the server.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_MANAGE_HISTORY"
@@ -132,15 +132,15 @@
             "dm": false,
             "examples": [
                 {
-                    "title": "Remove a última advertência/aviso de um usuário.",
+                    "title": "Remove the last warning/notice from a user.",
                     "usage": "user:{@user}"
                 },
                 {
-                    "title": "Remove um número de advertências/avisos de um usuário.",
+                    "title": "Remove a number of warnings/notices from a user.",
                     "usage": "user:{@user} amount:{amount}"
                 },
                 {
-                    "title": "Remove todas as advertências/avisos de um usuário.",
+                    "title": "Remove all warnings/notices from a user.",
                     "usage": "user:{@user} amount:all"
                 }
             ],
@@ -148,7 +148,7 @@
         },
         {
             "name": "ban",
-            "description": "Bane um usuário do servidor.",
+            "description": "Ban a user from the server.",
             "lunyDiscordPermissions": null,
             "botUserPermissions": [
                 "LUNAR_BAN_MEMBERS"
@@ -159,19 +159,19 @@
             "dm": true,
             "examples": [
                 {
-                    "title": "Pune um usuário usando a menção.",
+                    "title": "Punish a user using mention.",
                     "usage": "user user:{@user}"
                 },
                 {
-                    "title": "Pune um usuário usando o id.",
+                    "title": "Punish a user using their ID.",
                     "usage": "user user:{userID}"
                 },
                 {
-                    "title": "Pune um usuário usando com um motivo.",
+                    "title": "Punish a user with a reason.",
                     "usage": "user user:{@user} reason:{reason}"
                 },
                 {
-                    "title": "Pune um usuário sem notificar via dm.",
+                    "title": "Punish a user without DM notification.",
                     "usage": "user user:{@user} notify-dm:{notify-dm}"
                 }
             ],
@@ -369,19 +369,19 @@
             "dm": true,
             "examples": [
                 {
-                    "title": "Pune um usuário usando a menção.",
+                    "title": "Punish a user using mention.",
                     "usage": "user user:{@user}"
                 },
                 {
-                    "title": "Pune um usuário usando o id.",
+                    "title": "Punish a user using their ID.",
                     "usage": "user user:{userID}"
                 },
                 {
-                    "title": "Pune um usuário usando com um motivo.",
+                    "title": "Punish a user with a reason.",
                     "usage": "user user:{@user} reason:{reason}"
                 },
                 {
-                    "title": "Pune um usuário sem notificar via dm.",
+                    "title": "Punish a user without DM notification.",
                     "usage": "user user:{@user} notify-dm:{notify-dm}"
                 }
             ],
@@ -466,19 +466,19 @@
             "dm": true,
             "examples": [
                 {
-                    "title": "Pune um usuário usando a menção.",
+                    "title": "Punish a user using mention.",
                     "usage": "user user:{@user}"
                 },
                 {
-                    "title": "Pune um usuário usando o id.",
+                    "title": "Punish a user using their ID.",
                     "usage": "user user:{userID}"
                 },
                 {
-                    "title": "Pune um usuário usando com um motivo.",
+                    "title": "Punish a user with a reason.",
                     "usage": "user user:{@user} reason:{reason}"
                 },
                 {
-                    "title": "Pune um usuário sem notificar via dm.",
+                    "title": "Punish a user without DM notification.",
                     "usage": "user user:{@user} notify-dm:{notify-dm}"
                 }
             ],

@@ -60,15 +60,65 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
     const [loading, setLoading] = useState(true);
     const [economyConfig, setEconomyConfig] = useState<IEconomyConfig>(config);
     const [saving, setSaving] = useState(false);
+    const [selectedGuildId, setSelectedGuildId] = useState<string>('');
+    const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
     useEffect(() => {
+        const fetchGuilds = async () => {
+            try {
+                const response = await fetch('/api/discord/guilds');
+                if (response.ok) {
+                    const guilds = await response.json();
+                    setUserGuilds(guilds.filter((g: any) => g.permissions_new & 0x20));
+                }
+            } catch (error) {
+                console.error('Failed to fetch guilds:', error);
+            }
+        };
+        fetchGuilds();
         setTimeout(() => setLoading(false), 1000);
     }, []);
 
+    const handleGuildSelect = async (guildId: string) => {
+        setSelectedGuildId(guildId);
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/guilds/${guildId}/economy`);
+            if (response.ok) {
+                const guildConfig = await response.json();
+                setEconomyConfig(guildConfig);
+            }
+        } catch (error) {
+            console.error('Failed to fetch guild economy config:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const isConfigDisabled = !selectedGuildId;
+
     const handleSave = async () => {
+        if (!selectedGuildId) {
+            alert('Please select a server first!');
+            return;
+        }
         setSaving(true);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setSaving(false);
+        try {
+            const response = await fetch(`/api/guilds/${selectedGuildId}/economy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(economyConfig)
+            });
+            if (response.ok) {
+                alert('Economy settings saved successfully!');
+            } else {
+                throw new Error('Failed to save settings');
+            }
+        } catch (error) {
+            alert('Failed to save settings. Please try again.');
+        } finally {
+            setSaving(false);
+        }
     };
 
     if (loading) {
@@ -82,12 +132,34 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
                 <meta name="description" content="Comprehensive economy management for Discord servers" />
             </Head>
 
-            <LeftMenu {...{user}} />
+            <LeftMenu {...{user}} saveButton={!!selectedGuildId} onSave={handleSave} saving={saving} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>💰 Economy System</h1>
                     <p>Manage your server's complete economic ecosystem with detailed analytics.</p>
+                </div>
+
+                {/* Server Selection */}
+                <div className={dashStyles.serverSelection}>
+                    <h3>Select a Server to Configure:</h3>
+                    <select 
+                        value={selectedGuildId} 
+                        onChange={(e) => handleGuildSelect(e.target.value)}
+                        className={dashStyles.serverSelect}
+                    >
+                        <option value="">Choose a server...</option>
+                        {userGuilds.map(guild => (
+                            <option key={guild.id} value={guild.id}>
+                                {guild.name}
+                            </option>
+                        ))}
+                    </select>
+                    {!selectedGuildId && (
+                        <p className={dashStyles.helpText}>
+                            ⚠️ Please select a server to configure economy settings.
+                        </p>
+                    )}
                 </div>
 
                 {/* Economy Stats */}
@@ -132,6 +204,7 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
                     <CheckRadio>
                         <Toggle 
                             defaultChecked={economyConfig.enabled}
+                            disabled={isConfigDisabled}
                             onChange={(checked) => setEconomyConfig(prev => ({
                                 ...prev,
                                 enabled: checked
