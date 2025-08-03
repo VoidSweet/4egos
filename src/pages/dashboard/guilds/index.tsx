@@ -83,7 +83,10 @@ export default class DashboardGuilds extends React.Component {
                     discriminator: userData.discriminator,
                     avatar: userData.avatar,
                     verified: userData.verified,
-                    premium_type: userData.premium_type
+                    public_flags: userData.public_flags,
+                    flags: userData.flags,
+                    locale: userData.locale,
+                    mfa_enabled: userData.mfa_enabled
                 },
                 guilds: formattedGuilds,
                 loading: false,

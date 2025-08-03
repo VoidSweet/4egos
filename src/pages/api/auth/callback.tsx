@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse} from 'next'
 import nookies from 'nookies';
-import fetch from 'node-fetch'
-import formData from 'form-data'
 import { getState, deleteState } from '../../../utils/states'
 import config from '../../../config';
 
@@ -19,7 +17,7 @@ export default async function APIAuthCallback(req: NextApiRequest, res: NextApiR
 
     console.log(config.discord.redirectUri)
 
-    const data = new formData();
+    const data = new FormData();
     data.append("client_id", config.discord.clientId)
     data.append("client_secret", config.discord.clientSecret)
     data.append("grant_type", "authorization_code")
