@@ -53,12 +53,12 @@ export default class DashboardMe extends React.Component {
 
                 <div className={`${styles['content']}`}>
                     <div className={styles['small-card']}>
-                        <h3>Canal de modlogs</h3>
+                        <h3>Moderation logs channel</h3>
                         <br />
                         <Select 
                             {...{
                                 id: 'select-modlogs_channel',
-                                placeholder: 'Selecione o canal',
+                                placeholder: 'Select channel',
                                 value: guild?.channels.find(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type) && channel.id == guild.modlogs_channel)?.name
                             }} 
                             data-value={guild?.modlogs_channel} 
@@ -67,7 +67,7 @@ export default class DashboardMe extends React.Component {
                         >
                             <Option 
                                 data-value={'none'} 
-                                data-li={'Nenhum canal selecionado'}
+                                data-li={'No channel selected'}
                                 selected={!guild?.punishments_channel}
                             >
                                 <i className={'fas fa-folder-times'} /> Nunhum
@@ -94,12 +94,12 @@ export default class DashboardMe extends React.Component {
                     </div>
 
                     <div className={styles['small-card']}>
-                        <h3>Canal de Punicões</h3>
+                        <h3>Punishments channel</h3>
                         <br />
                         <Select 
                             {...{
                                 id: 'select-punishments_channel',
-                                placeholder: 'Selecione o canal',
+                                placeholder: 'Select channel',
                                 value: guild?.channels.find(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type) && channel.id == guild.punishments_channel)?.name
                             }} 
                             data-value={guild?.punishments_channel} 

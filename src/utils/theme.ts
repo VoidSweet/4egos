@@ -17,7 +17,7 @@ const whiteColor = '#ffffff';
 
 const basesColors = {
     dark: {
-        background: '#0d0510',
+        background: '#0a0f1c', // Dark blue background
         ui: whiteColor,
         flow: blackColor,
         text: whiteColor,
@@ -25,7 +25,7 @@ const basesColors = {
         icon: whiteColor
     },
     light: {
-        background: '#faecff',
+        background: '#f0f8ff', // Light blue background
         ui: blackColor,
         flow: whiteColor,
         text: blackColor,
@@ -45,7 +45,7 @@ const tonalits = Object.entries({
     "100": ''
 });
 
-function ThemeVariables({ band = "#A020F0", mode = 'dark' }: IThemeColors = {}) {
+function ThemeVariables({ band = "#1e40af", mode = 'dark' }: IThemeColors = {}) { // Changed to blue theme
     const baseColors: IBaseColors = basesColors[mode] || basesColors['dark'];
     
     const obj = {
@@ -58,8 +58,8 @@ function ThemeVariables({ band = "#A020F0", mode = 'dark' }: IThemeColors = {}) 
         "--luny-colors-icon": baseColors.icon || band,
         ...mapTonalits("--luny-colors-light", whiteColor),
         ...mapTonalits("--luny-colors-dark", blackColor),
-        "--luny-colors-green": "#61fe80",
-        "--luny-colors-red": "#fe4854"
+        "--luny-colors-green": "#10b981", // Modern green
+        "--luny-colors-red": "#ef4444"   // Modern red
     };
 
     return { 

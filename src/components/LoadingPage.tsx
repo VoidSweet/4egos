@@ -16,26 +16,23 @@ export default class LoadingPage extends React.Component {
     }
 
     componentDidMount() {
+        // Remove animation delays - make loading instant
         const { loading } = this.props as IProps;
-        setTimeout(() => {
-            const el = document.querySelector(`.${styles["l-overlay"]}`) as HTMLElement;
-            if(loading) {
-                el.classList.add(styles["active"]);
-            } else {
-                el.classList.remove(styles["active"]);
-            }
-        });
+        const el = document.querySelector(`.${styles["l-overlay"]}`) as HTMLElement;
+        if(loading) {
+            el.classList.add(styles["active"]);
+        } else {
+            el.classList.remove(styles["active"]);
+        }
     }
  
     componentDidUpdate() {
+        // Remove animation delays - make hiding instant
         const { loading } = this.props as IProps;
         if(loading == false) {
             const el = document.querySelector(`.${styles["l-overlay"]}`) as HTMLElement;
-            el.style.transitionDuration = "3s";
-            setTimeout(() => {
-                el.classList.remove(styles["active"]);
-                this.setState({ loading: false })
-            });
+            el.classList.remove(styles["active"]);
+            this.setState({ loading: false })
         }
     }
 

@@ -318,59 +318,59 @@ export default function SecurityDashboard({ user, config }: IProps) {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const { ['__SessionLuny']: token } = parseCookies(ctx);
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { token } = parseCookies(ctx);
+    
     if (!token) {
         return {
             redirect: {
-                destination: `/api/auth/login?state=${encodeURIComponent(ctx.resolvedUrl || '/dashboard/security')}`,
+                destination: '/api/auth/login',
                 permanent: false,
-            }
+            },
         };
     }
 
-    // Mock security configuration
-    const mockConfig: ISecurityConfig = {
-        antiNuke: {
-            enabled: true,
-            autoQuarantine: true,
-            panicMode: false,
-            channelDeleteLimit: 3,
-            roleDeleteLimit: 3,
-            massBanLimit: 5,
-            massKickLimit: 10,
-            webhookSpamLimit: 3,
-        },
-        heatSystem: {
-            enabled: true,
-            baseThreshold: 100,
-            decayRate: 0.1,
-            messageSpamHeat: 10,
-            mentionSpamHeat: 15,
-            emojiSpamHeat: 5,
-            capsSpamHeat: 8,
-        },
-        verification: {
-            enabled: true,
-            verificationMode: 'captcha',
-            accountAgeCheck: true,
-            minimumAgeHours: 24,
-            activityMonitoring: true,
+    try {
+        // Fetch real user data from Discord
+        const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user data');
         }
-    };
+        
+        const userData = await userResponse.json();
+        
+        return {
+            props: {
+                user: {
+                    id: userData.id,
+                    username: userData.username,
+                    discriminator: userData.discriminator,
+                    avatar: userData.avatar,
+                    verified: userData.verified,
+                    public_flags: userData.public_flags
+                }
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return {
+            redirect: {
+                destination: '/api/auth/login',
+                permanent: false,
+            },
+        };
+    }
+};
+    }
 
-    const mockUser: IUser = {
-        id: "123456789",
-        username: "AegisAdmin",
-        discriminator: "0001",
-        avatar: null,
-        verified: true,
-        mfa_enabled: true,
-        locale: "en-US",
-        flags: 0,
-        public_flags: 0
-    };
+    // Mock security configuration
+    
+
+    
 
     return {
         props: {

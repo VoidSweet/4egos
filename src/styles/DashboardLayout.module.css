@@ -2,12 +2,12 @@
 .dashboardHeader {
     margin-bottom: 3rem;
     padding: 2.5rem;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%); /* Blue gradient theme */
     border-radius: 20px;
     color: white;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 20px 60px rgba(30, 64, 175, 0.3); /* Blue shadow */
 }
 
 .dashboardHeader h1 {
@@ -382,8 +382,8 @@
 
 .serverSelect:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #1e40af; /* Blue focus */
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
 .serverSelect:hover {

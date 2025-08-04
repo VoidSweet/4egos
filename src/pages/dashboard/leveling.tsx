@@ -90,29 +90,56 @@ export default function LevelingDashboard({ user }: IProps) {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const { ['__SessionLuny']: token } = parseCookies(ctx);
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { token } = parseCookies(ctx);
+    
     if (!token) {
         return {
             redirect: {
-                destination: `/api/auth/login?state=${encodeURIComponent(ctx.resolvedUrl || '/dashboard/leveling')}`,
+                destination: '/api/auth/login',
                 permanent: false,
-            }
+            },
         };
     }
 
-    const mockUser: IUser = {
-        id: "123456789",
-        username: "AegisAdmin",
-        discriminator: "0001",
-        avatar: null,
-        verified: true,
-        mfa_enabled: true,
-        locale: "en-US",
-        flags: 0,
-        public_flags: 0
-    };
+    try {
+        // Fetch real user data from Discord
+        const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+        
+        const userData = await userResponse.json();
+        
+        return {
+            props: {
+                user: {
+                    id: userData.id,
+                    username: userData.username,
+                    discriminator: userData.discriminator,
+                    avatar: userData.avatar,
+                    verified: userData.verified,
+                    public_flags: userData.public_flags
+                }
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return {
+            redirect: {
+                destination: '/api/auth/login',
+                permanent: false,
+            },
+        };
+    }
+};
+    }
+
+    
 
     return {
         props: {

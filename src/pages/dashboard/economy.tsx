@@ -306,70 +306,60 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const { ['__SessionLuny']: token } = parseCookies(ctx);
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { token } = parseCookies(ctx);
+    
     if (!token) {
         return {
             redirect: {
-                destination: `/api/auth/login?state=${encodeURIComponent(ctx.resolvedUrl || '/dashboard/economy')}`,
+                destination: '/api/auth/login',
                 permanent: false,
-            }
+            },
         };
     }
 
-    const mockStats: IEconomyStats = {
-        totalCirculation: 1500000,
-        averageBalance: 2500,
-        richestUser: {
-            username: "EconomyKing",
-            balance: 50000
-        },
-        dailyTransactions: 245,
-        weeklyGrowth: "+15%",
-        bankDeposits: 750000,
-        totalLoans: 25000
-    };
-
-    const mockConfig: IEconomyConfig = {
-        enabled: true,
-        primaryCurrency: {
-            name: "AegisCoins",
-            symbol: "🪙",
-            startingBalance: 1000,
-            maxBalance: 1000000
-        },
-        dailyBonus: {
-            enabled: true,
-            baseAmount: 100,
-            streakMultiplier: 1.1,
-            maxStreakBonus: 2.0
-        },
-        messageRewards: {
-            enabled: true,
-            baseReward: 5,
-            cooldownSeconds: 60,
-            maxPerDay: 500
-        },
-        banking: {
-            enabled: true,
-            interestRate: 0.05,
-            minimumDeposit: 100,
-            maximumDeposit: 50000
+    try {
+        // Fetch real user data from Discord
+        const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user data');
         }
-    };
+        
+        const userData = await userResponse.json();
+        
+        return {
+            props: {
+                user: {
+                    id: userData.id,
+                    username: userData.username,
+                    discriminator: userData.discriminator,
+                    avatar: userData.avatar,
+                    verified: userData.verified,
+                    public_flags: userData.public_flags
+                }
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return {
+            redirect: {
+                destination: '/api/auth/login',
+                permanent: false,
+            },
+        };
+    }
+};
+    }
 
-    const mockUser: IUser = {
-        id: "123456789",
-        username: "AegisAdmin",
-        discriminator: "0001",
-        avatar: null,
-        verified: true,
-        mfa_enabled: true,
-        locale: "en-US",
-        flags: 0,
-        public_flags: 0
-    };
+    
+
+    
+
+    
 
     return {
         props: {

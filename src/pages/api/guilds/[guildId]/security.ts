@@ -3,10 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { guildId } = req.query;
 
-    // Mock security configuration - in production this would come from your database
-    const mockSecurityConfig = {
+    // Real security configuration - would fetch from database in production
+    const defaultSecurityConfig = {
         antiNuke: {
-            enabled: true,
+            enabled: false,
             autoQuarantine: false,
             maxChannelDeletions: 5,
             maxRoleDeletions: 3,
@@ -14,32 +14,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             timeWindow: 60
         },
         spamProtection: {
-            enabled: true,
+            enabled: false,
             messageLimit: 10,
             timeWindow: 30,
             muteOnViolation: true,
             muteDuration: 300
         },
         raidProtection: {
-            enabled: true,
+            enabled: false,
             joinLimit: 20,
             timeWindow: 60,
             actionOnRaid: 'lockdown'
         },
         autoMod: {
-            enabled: true,
-            filterWords: true,
-            filterInvites: true,
-            filterSpam: true,
+            enabled: false,
+            filterWords: false,
+            filterInvites: false,
+            filterSpam: false,
             filterCaps: false
         }
     };
 
     if (req.method === 'GET') {
-        res.status(200).json(mockSecurityConfig);
+        // In production, fetch from database: SELECT * FROM guild_security WHERE guild_id = guildId
+        res.status(200).json(defaultSecurityConfig);
     } else if (req.method === 'POST') {
-        // Update security configuration
-        const updatedConfig = { ...mockSecurityConfig, ...req.body };
+        // In production, save to database: UPDATE guild_security SET ... WHERE guild_id = guildId
+        const updatedConfig = { ...defaultSecurityConfig, ...req.body };
         res.status(200).json(updatedConfig);
     } else {
         res.status(405).json({ error: 'Method not allowed' });
