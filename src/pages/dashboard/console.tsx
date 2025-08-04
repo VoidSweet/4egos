@@ -2,9 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
 import LeftMenu from '../../components/LeftMenu';
-import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
 import dashStyles from '../../styles/DashboardLayout.module.css';
 import { IUser } from '../../types';
@@ -14,82 +12,92 @@ interface IProps {
 }
 
 export default function ConsoleDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
-    }, []);
-
-    if (loading) {
-        return <LoadingPage {...{loading}} />;
-    }
-
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Server Console</title>
-                <meta name="description" content="Advanced server monitoring and management console" />
+                <title>4EgosBot Dashboard - Developer Console</title>
+                <meta name="description" content="Advanced developer tools and API access" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
-                    <h1>🖥️ Server Console</h1>
-                    <p>Real-time server monitoring, logs, and administrative controls.</p>
+                    <h1>🔧 Developer Console</h1>
+                    <p>Advanced tools for developers and power users.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📊</div>
-                        <h3>Live Statistics</h3>
-                        <p>Real-time server performance monitoring</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Member activity</span>
-                            <span>Bot performance</span>
-                            <span>Server health</span>
+                <div className={dashStyles.consoleSection}>
+                    <div className={dashStyles.consoleCard}>
+                        <h3>🔑 API Access</h3>
+                        <p>Generate API keys for custom integrations</p>
+                        <div className={dashStyles.apiKeySection}>
+                            <input 
+                                type="text" 
+                                value="•••••••••••••••••••••••••••••••••••••••••"
+                                readOnly
+                                className={dashStyles.apiKeyInput}
+                            />
+                            <button className={dashStyles.generateButton}>
+                                Generate New Key
+                            </button>
+                        </div>
+                        <p className={dashStyles.note}>
+                            ⚠️ Premium feature - Upgrade to access API
+                        </p>
+                    </div>
+
+                    <div className={dashStyles.consoleCard}>
+                        <h3>📊 Analytics API</h3>
+                        <p>Access detailed server analytics via API</p>
+                        <ul className={dashStyles.apiEndpoints}>
+                            <li>GET /api/v1/guilds/{'{guildId}'}/stats</li>
+                            <li>GET /api/v1/guilds/{'{guildId}'}/members</li>
+                            <li>GET /api/v1/guilds/{'{guildId}'}/activity</li>
+                        </ul>
+                        <button className={dashStyles.docsButton}>
+                            View Documentation
+                        </button>
+                    </div>
+
+                    <div className={dashStyles.consoleCard}>
+                        <h3>🔍 Debug Tools</h3>
+                        <p>Debug and troubleshoot bot issues</p>
+                        <div className={dashStyles.debugActions}>
+                            <button className={dashStyles.debugButton}>
+                                View Bot Logs
+                            </button>
+                            <button className={dashStyles.debugButton}>
+                                Test Connection
+                            </button>
+                            <button className={dashStyles.debugButton}>
+                                Clear Cache
+                            </button>
                         </div>
                     </div>
 
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📝</div>
-                        <h3>System Logs</h3>
-                        <p>Comprehensive logging and audit trails</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Event logs</span>
-                            <span>Error tracking</span>
-                            <span>Admin actions</span>
+                    <div className={dashStyles.consoleCard}>
+                        <h3>⚡ Webhooks</h3>
+                        <p>Set up webhooks for real-time events</p>
+                        <div className={dashStyles.webhookConfig}>
+                            <input 
+                                type="url" 
+                                placeholder="https://your-server.com/webhook"
+                                className={dashStyles.webhookInput}
+                            />
+                            <button className={dashStyles.addButton}>
+                                Add Webhook
+                            </button>
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⚡</div>
-                        <h3>Quick Actions</h3>
-                        <p>Fast access to common administrative tasks</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Bulk operations</span>
-                            <span>Emergency controls</span>
-                            <span>System commands</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🔍</div>
-                        <h3>Advanced Search</h3>
-                        <p>Powerful search and filtering capabilities</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Member lookup</span>
-                            <span>Message search</span>
-                            <span>Event filtering</span>
-                        </div>
+                        <p className={dashStyles.note}>
+                            ⚠️ Premium feature - Upgrade to use webhooks
+                        </p>
                     </div>
                 </div>
             </div>
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);
@@ -104,7 +112,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     try {
-        // Fetch real user data from Discord
         const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
             headers: { 'Authorization': `Bearer ${token}` }
         });

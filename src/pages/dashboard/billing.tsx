@@ -2,9 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
 import LeftMenu from '../../components/LeftMenu';
-import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
 import dashStyles from '../../styles/DashboardLayout.module.css';
 import { IUser } from '../../types';
@@ -14,82 +12,72 @@ interface IProps {
 }
 
 export default function BillingDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
-    }, []);
-
-    if (loading) {
-        return <LoadingPage {...{loading}} />;
-    }
-
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Premium Features</title>
-                <meta name="description" content="Unlock advanced features and premium benefits" />
+                <title>4EgosBot Dashboard - Billing & Premium</title>
+                <meta name="description" content="Manage your premium subscription and billing" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
-                    <h1>💎 Premium Features</h1>
-                    <p>Unlock the full potential of AegisBot with premium features and enhanced capabilities.</p>
+                    <h1>💎 Billing & Premium</h1>
+                    <p>Manage your premium subscription and unlock advanced features.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⚡</div>
-                        <h3>Enhanced Security</h3>
-                        <p>Advanced protection and monitoring</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Real-time threat detection</span>
-                            <span>Advanced anti-nuke</span>
-                            <span>Custom security rules</span>
-                        </div>
+                <div className={dashStyles.premiumSection}>
+                    <div className={dashStyles.premiumCard}>
+                        <h3>🆓 Free Plan</h3>
+                        <p>Currently Active</p>
+                        <ul>
+                            <li>✅ Basic moderation tools</li>
+                            <li>✅ Economy system</li>
+                            <li>✅ Leveling system</li>
+                            <li>❌ Advanced analytics</li>
+                            <li>❌ Custom commands</li>
+                            <li>❌ Priority support</li>
+                        </ul>
                     </div>
 
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎮</div>
-                        <h3>Premium Games</h3>
-                        <p>Exclusive games and features</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Custom minigames</span>
-                            <span>Enhanced rewards</span>
-                            <span>Special events</span>
-                        </div>
+                    <div className={`${dashStyles.premiumCard} ${dashStyles.recommended}`}>
+                        <div className={dashStyles.badge}>Recommended</div>
+                        <h3>⭐ Premium Plan</h3>
+                        <p className={dashStyles.price}>$4.99/month</p>
+                        <ul>
+                            <li>✅ Everything in Free</li>
+                            <li>✅ Advanced analytics</li>
+                            <li>✅ Custom commands</li>
+                            <li>✅ Priority support</li>
+                            <li>✅ Advanced automod</li>
+                            <li>✅ Custom branding</li>
+                        </ul>
+                        <button className={dashStyles.upgradeButton}>
+                            Upgrade to Premium
+                        </button>
                     </div>
 
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📊</div>
-                        <h3>Advanced Analytics</h3>
-                        <p>Detailed insights and reporting</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Member analytics</span>
-                            <span>Activity reports</span>
-                            <span>Growth tracking</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎨</div>
-                        <h3>Customization</h3>
-                        <p>Personalize your server experience</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Custom branding</span>
-                            <span>Personalized themes</span>
-                            <span>White-label options</span>
-                        </div>
+                    <div className={dashStyles.premiumCard}>
+                        <h3>👑 Enterprise Plan</h3>
+                        <p className={dashStyles.price}>Contact Us</p>
+                        <ul>
+                            <li>✅ Everything in Premium</li>
+                            <li>✅ Dedicated support</li>
+                            <li>✅ Custom integrations</li>
+                            <li>✅ Advanced permissions</li>
+                            <li>✅ SLA guarantee</li>
+                            <li>✅ Custom development</li>
+                        </ul>
+                        <button className={dashStyles.contactButton}>
+                            Contact Sales
+                        </button>
                     </div>
                 </div>
             </div>
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);
@@ -104,7 +92,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     try {
-        // Fetch real user data from Discord
         const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
             headers: { 'Authorization': `Bearer ${token}` }
         });

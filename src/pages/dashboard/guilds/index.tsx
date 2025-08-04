@@ -26,6 +26,8 @@ interface IProps {
 };
 
 export default class DashboardGuilds extends React.Component {
+    private _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -36,7 +38,22 @@ export default class DashboardGuilds extends React.Component {
         } as IState;
     }
 
-    async componentDidMount(): Promise<void> {
+    componentDidMount(): void {
+        this._isMounted = true;
+        this.loadData();
+    }
+
+    componentWillUnmount(): void {
+        this._isMounted = false;
+    }
+
+    private safeSetState(newState: Partial<IState>): void {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    }
+
+    async loadData(): Promise<void> {
         const { token } = this.props as IProps;
 
         try {
@@ -87,7 +104,7 @@ export default class DashboardGuilds extends React.Component {
                 features: guild.features || []
             }));
 
-            this.setState({
+            this.safeSetState({
                 user: {
                     id: userData.id,
                     username: userData.username,
@@ -105,7 +122,7 @@ export default class DashboardGuilds extends React.Component {
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            this.setState({
+            this.safeSetState({
                 loading: false,
                 user: null,
                 guilds: [],
@@ -113,7 +130,9 @@ export default class DashboardGuilds extends React.Component {
             });
             // Redirect to login if token is invalid
             setTimeout(() => {
-                window.location.href = '/api/auth/login?dt=true';
+                if (this._isMounted) {
+                    window.location.href = '/api/auth/login?dt=true';
+                }
             }, 2000);
         }
     }

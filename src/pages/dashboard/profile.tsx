@@ -2,9 +2,8 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
+import Image from 'next/image';
 import LeftMenu from '../../components/LeftMenu';
-import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
 import dashStyles from '../../styles/DashboardLayout.module.css';
 import { IUser } from '../../types';
@@ -14,74 +13,128 @@ interface IProps {
 }
 
 export default function ProfileDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
-    }, []);
-
-    if (loading) {
-        return <LoadingPage {...{loading}} />;
-    }
-
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - User Profile</title>
-                <meta name="description" content="Manage your personal profile and preferences" />
+                <title>4EgosBot Dashboard - User Profile</title>
+                <meta name="description" content="Manage your user profile and preferences" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>👤 User Profile</h1>
-                    <p>Manage your personal settings, preferences, and activity history.</p>
+                    <p>Manage your profile settings and bot preferences.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⚙️</div>
-                        <h3>Account Settings</h3>
-                        <p>Configure your account preferences</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Privacy settings</span>
-                            <span>Notification preferences</span>
-                            <span>Display options</span>
+                <div className={dashStyles.profileSection}>
+                    <div className={dashStyles.profileCard}>
+                        <div className={dashStyles.profileHeader}>
+                            <div className={dashStyles.profileAvatar}>
+                                {user.avatar ? (
+                                    <Image
+                                        src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.webp`}
+                                        alt={user.username}
+                                        width={80}
+                                        height={80}
+                                    />
+                                ) : (
+                                    <div className={dashStyles.defaultAvatar}>
+                                        {user.username.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                            </div>
+                            <div className={dashStyles.profileInfo}>
+                                <h3>{user.username}</h3>
+                                <p>#{user.discriminator}</p>
+                                <div className={dashStyles.profileBadges}>
+                                    {user.verified && <span className={dashStyles.badge}>✅ Verified</span>}
+                                    <span className={dashStyles.badge}>🆓 Free User</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📊</div>
-                        <h3>Activity Summary</h3>
-                        <p>View your server activity and statistics</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Message count</span>
-                            <span>Voice time</span>
-                            <span>XP progress</span>
+                    <div className={dashStyles.settingsGrid}>
+                        <div className={dashStyles.settingCard}>
+                            <h4>🔔 Notifications</h4>
+                            <p>Control what notifications you receive</p>
+                            <div className={dashStyles.settingOptions}>
+                                <label>
+                                    <input type="checkbox" defaultChecked />
+                                    Email notifications
+                                </label>
+                                <label>
+                                    <input type="checkbox" defaultChecked />
+                                    Discord DM alerts
+                                </label>
+                                <label>
+                                    <input type="checkbox" />
+                                    Marketing emails
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className={dashStyles.settingCard}>
+                            <h4>🌙 Theme Preferences</h4>
+                            <p>Customize your dashboard appearance</p>
+                            <div className={dashStyles.themeOptions}>
+                                <button className={`${dashStyles.themeButton} ${dashStyles.active}`}>
+                                    🌞 Light
+                                </button>
+                                <button className={dashStyles.themeButton}>
+                                    🌙 Dark
+                                </button>
+                                <button className={dashStyles.themeButton}>
+                                    🎨 Auto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className={dashStyles.settingCard}>
+                            <h4>🔐 Privacy & Security</h4>
+                            <p>Manage your privacy settings</p>
+                            <div className={dashStyles.settingOptions}>
+                                <label>
+                                    <input type="checkbox" defaultChecked />
+                                    Show in public leaderboards
+                                </label>
+                                <label>
+                                    <input type="checkbox" defaultChecked />
+                                    Allow data analytics
+                                </label>
+                                <label>
+                                    <input type="checkbox" />
+                                    Share usage statistics
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className={dashStyles.settingCard}>
+                            <h4>📊 Data Export</h4>
+                            <p>Download your data and account information</p>
+                            <div className={dashStyles.exportActions}>
+                                <button className={dashStyles.exportButton}>
+                                    📥 Export User Data
+                                </button>
+                                <button className={dashStyles.exportButton}>
+                                    📋 Download Activity Log
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🏆</div>
-                        <h3>Achievements</h3>
-                        <p>Track your accomplishments and badges</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Earned badges</span>
-                            <span>Level milestones</span>
-                            <span>Special rewards</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🔒</div>
-                        <h3>Security</h3>
-                        <p>Manage your account security settings</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Two-factor auth</span>
-                            <span>Login history</span>
-                            <span>Connected accounts</span>
+                    <div className={dashStyles.dangerZone}>
+                        <h4>⚠️ Danger Zone</h4>
+                        <p>Irreversible actions that affect your account</p>
+                        <div className={dashStyles.dangerActions}>
+                            <button className={dashStyles.clearDataButton}>
+                                Clear All Data
+                            </button>
+                            <button className={dashStyles.deleteAccountButton}>
+                                Delete Account
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -89,7 +142,6 @@ export default function ProfileDashboard({ user }: IProps) {
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);
@@ -104,7 +156,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     try {
-        // Fetch real user data from Discord
         const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
             headers: { 'Authorization': `Bearer ${token}` }
         });

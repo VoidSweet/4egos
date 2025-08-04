@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
+import Link from 'next/link';
+import Image from 'next/image';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
@@ -14,10 +15,23 @@ interface IProps {
 }
 
 export default function LevelingDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = useState(false);
+    const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
+    useEffect(() => {
+        // Fetch user's guilds for server selection
+        const fetchGuilds = async () => {
+            try {
+                const response = await fetch('/api/discord/guilds');
+                if (response.ok) {
+                    const guilds = await response.json();
+                    setUserGuilds(guilds.filter((g: any) => g.permissions_new & 0x20)); // MANAGE_GUILD permission
+                }
+            } catch (error) {
+                console.error('Failed to fetch guilds:', error);
+            }
+        };
+        fetchGuilds();
     }, []);
 
     if (loading) {
@@ -27,69 +41,66 @@ export default function LevelingDashboard({ user }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Leveling & XP</title>
-                <meta name="description" content="Engaging progression system with rewards and competitions" />
+                <title>4EgosBot Dashboard - Leveling System</title>
+                <meta name="description" content="Leveling system management overview" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
-                    <h1>📈 Leveling & XP System</h1>
-                    <p>Engaging progression system with role rewards, leaderboards, and competitions.</p>
+                    <h1>📈 Leveling System</h1>
+                    <p>Configure your server&apos;s leveling system with XP rewards and role assignments.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⭐</div>
-                        <h3>XP Configuration</h3>
-                        <p>Customize experience point rates and sources</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Message XP</span>
-                            <span>Voice XP</span>
-                            <span>Bonus multipliers</span>
+                {/* Server Selection */}
+                <div className={dashStyles.serverSelection}>
+                    <h3>Select a Server to Configure:</h3>
+                    
+                    {userGuilds.length === 0 ? (
+                        <div className={dashStyles.noServers}>
+                            <h4>No servers found</h4>
+                            <p>You need to have &quot;Manage Server&quot; permission to configure the leveling system.</p>
+                            <Link href="/invite" className={dashStyles.inviteButton}>
+                                Invite 4EgosBot
+                            </Link>
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎖️</div>
-                        <h3>Role Rewards</h3>
-                        <p>Automatic role assignment based on user levels</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Level milestones</span>
-                            <span>Custom rewards</span>
-                            <span>Special perks</span>
+                    ) : (
+                        <div className={dashStyles.serverGrid}>
+                            {userGuilds.map((guild) => (
+                                <Link 
+                                    key={guild.id}
+                                    href={`/dashboard/guilds/${guild.id}?section=leveling`}
+                                    className={dashStyles.serverCard}
+                                >
+                                    <div className={dashStyles.serverIcon}>
+                                        {guild.icon ? (
+                                            <Image 
+                                                src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`}
+                                                alt={guild.name}
+                                                width={48}
+                                                height={48}
+                                            />
+                                        ) : (
+                                            <div className={dashStyles.defaultIcon}>
+                                                {guild.name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={dashStyles.serverInfo}>
+                                        <h4>{guild.name}</h4>
+                                        <p>Configure Leveling Settings</p>
+                                    </div>
+                                    <div className={dashStyles.serverArrow}>→</div>
+                                </Link>
+                            ))}
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🏅</div>
-                        <h3>Leaderboards</h3>
-                        <p>Competitive ranking systems and achievements</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Global rankings</span>
-                            <span>Weekly competitions</span>
-                            <span>Achievement system</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎁</div>
-                        <h3>Level Rewards</h3>
-                        <p>Special rewards and bonuses for reaching milestones</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Currency bonuses</span>
-                            <span>Shop discounts</span>
-                            <span>Exclusive access</span>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);

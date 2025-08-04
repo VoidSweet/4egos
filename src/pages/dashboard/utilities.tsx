@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
+import Link from 'next/link';
+import Image from 'next/image';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
@@ -14,10 +15,23 @@ interface IProps {
 }
 
 export default function UtilitiesDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = useState(false);
+    const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
+    useEffect(() => {
+        // Fetch user's guilds for server selection
+        const fetchGuilds = async () => {
+            try {
+                const response = await fetch('/api/discord/guilds');
+                if (response.ok) {
+                    const guilds = await response.json();
+                    setUserGuilds(guilds.filter((g: any) => g.permissions_new & 0x20)); // MANAGE_GUILD permission
+                }
+            } catch (error) {
+                console.error('Failed to fetch guilds:', error);
+            }
+        };
+        fetchGuilds();
     }, []);
 
     if (loading) {
@@ -27,69 +41,66 @@ export default function UtilitiesDashboard({ user }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Utilities</title>
-                <meta name="description" content="Essential server utilities and management tools" />
+                <title>4EgosBot Dashboard - Utilities & Tools</title>
+                <meta name="description" content="Utility commands and tools management overview" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
-                    <h1>🔧 Server Utilities</h1>
-                    <p>Essential tools for server management, automation, and member engagement.</p>
+                    <h1>🔧 Utilities & Tools</h1>
+                    <p>Configure useful utility commands and server management tools.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🔔</div>
-                        <h3>Notification System</h3>
-                        <p>Smart notification and announcement management</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Auto-announcements</span>
-                            <span>Event reminders</span>
-                            <span>Welcome messages</span>
+                {/* Server Selection */}
+                <div className={dashStyles.serverSelection}>
+                    <h3>Select a Server to Configure:</h3>
+                    
+                    {userGuilds.length === 0 ? (
+                        <div className={dashStyles.noServers}>
+                            <h4>No servers found</h4>
+                            <p>You need to have &quot;Manage Server&quot; permission to configure utility tools.</p>
+                            <Link href="/invite" className={dashStyles.inviteButton}>
+                                Invite 4EgosBot
+                            </Link>
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>📋</div>
-                        <h3>Channel Management</h3>
-                        <p>Advanced channel creation and organization</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Auto-channels</span>
-                            <span>Category organization</span>
-                            <span>Permission sync</span>
+                    ) : (
+                        <div className={dashStyles.serverGrid}>
+                            {userGuilds.map((guild) => (
+                                <Link 
+                                    key={guild.id}
+                                    href={`/dashboard/guilds/${guild.id}?section=utilities`}
+                                    className={dashStyles.serverCard}
+                                >
+                                    <div className={dashStyles.serverIcon}>
+                                        {guild.icon ? (
+                                            <Image 
+                                                src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`}
+                                                alt={guild.name}
+                                                width={48}
+                                                height={48}
+                                            />
+                                        ) : (
+                                            <div className={dashStyles.defaultIcon}>
+                                                {guild.name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={dashStyles.serverInfo}>
+                                        <h4>{guild.name}</h4>
+                                        <p>Configure Utility Settings</p>
+                                    </div>
+                                    <div className={dashStyles.serverArrow}>→</div>
+                                </Link>
+                            ))}
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>⚙️</div>
-                        <h3>Server Tools</h3>
-                        <p>Comprehensive server maintenance utilities</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Backup system</span>
-                            <span>Bulk operations</span>
-                            <span>Migration tools</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎯</div>
-                        <h3>Custom Commands</h3>
-                        <p>Create and manage custom server commands</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Command builder</span>
-                            <span>Response templates</span>
-                            <span>Permission controls</span>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);

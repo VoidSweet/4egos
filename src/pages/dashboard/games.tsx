@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
-
+import Link from 'next/link';
+import Image from 'next/image';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
@@ -14,10 +15,23 @@ interface IProps {
 }
 
 export default function GamesDashboard({ user }: IProps) {
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = useState(false);
+    const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
+    useEffect(() => {
+        // Fetch user's guilds for server selection
+        const fetchGuilds = async () => {
+            try {
+                const response = await fetch('/api/discord/guilds');
+                if (response.ok) {
+                    const guilds = await response.json();
+                    setUserGuilds(guilds.filter((g: any) => g.permissions_new & 0x20)); // MANAGE_GUILD permission
+                }
+            } catch (error) {
+                console.error('Failed to fetch guilds:', error);
+            }
+        };
+        fetchGuilds();
     }, []);
 
     if (loading) {
@@ -27,69 +41,66 @@ export default function GamesDashboard({ user }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Games & Entertainment</title>
-                <meta name="description" content="Interactive games and entertainment features" />
+                <title>4EgosBot Dashboard - Games & Entertainment</title>
+                <meta name="description" content="Games and entertainment features management overview" />
             </Head>
 
-            
             <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>🎮 Games & Entertainment</h1>
-                    <p>Interactive games with economy integration, tournaments, and special events.</p>
+                    <p>Configure fun games and entertainment features for your community.</p>
                 </div>
 
-                <div className={dashStyles.featureGrid}>
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🧠</div>
-                        <h3>Trivia Games</h3>
-                        <p>Challenge your knowledge with various categories and difficulty levels</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Multiple categories</span>
-                            <span>Difficulty levels</span>
-                            <span>Rewards system</span>
+                {/* Server Selection */}
+                <div className={dashStyles.serverSelection}>
+                    <h3>Select a Server to Configure:</h3>
+                    
+                    {userGuilds.length === 0 ? (
+                        <div className={dashStyles.noServers}>
+                            <h4>No servers found</h4>
+                            <p>You need to have &quot;Manage Server&quot; permission to configure games and entertainment.</p>
+                            <Link href="/invite" className={dashStyles.inviteButton}>
+                                Invite 4EgosBot
+                            </Link>
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎰</div>
-                        <h3>Casino Games</h3>
-                        <p>Test your luck with blackjack, poker, slots, and roulette</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Blackjack</span>
-                            <span>Poker</span>
-                            <span>Slot machines</span>
+                    ) : (
+                        <div className={dashStyles.serverGrid}>
+                            {userGuilds.map((guild) => (
+                                <Link 
+                                    key={guild.id}
+                                    href={`/dashboard/guilds/${guild.id}?section=games`}
+                                    className={dashStyles.serverCard}
+                                >
+                                    <div className={dashStyles.serverIcon}>
+                                        {guild.icon ? (
+                                            <Image 
+                                                src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp`}
+                                                alt={guild.name}
+                                                width={48}
+                                                height={48}
+                                            />
+                                        ) : (
+                                            <div className={dashStyles.defaultIcon}>
+                                                {guild.name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={dashStyles.serverInfo}>
+                                        <h4>{guild.name}</h4>
+                                        <p>Configure Game Settings</p>
+                                    </div>
+                                    <div className={dashStyles.serverArrow}>→</div>
+                                </Link>
+                            ))}
                         </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🏆</div>
-                        <h3>Tournaments</h3>
-                        <p>Compete in daily, weekly, and seasonal tournaments</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Daily challenges</span>
-                            <span>Weekly tournaments</span>
-                            <span>Special events</span>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.featureCard}>
-                        <div className={dashStyles.featureIcon}>🎯</div>
-                        <h3>Mini Games</h3>
-                        <p>Quick games for instant entertainment and rewards</p>
-                        <div className={dashStyles.featureItems}>
-                            <span>Word games</span>
-                            <span>Number puzzles</span>
-                            <span>Memory challenges</span>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </>
     );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { token } = parseCookies(ctx);
