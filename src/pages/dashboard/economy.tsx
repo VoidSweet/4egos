@@ -137,7 +137,7 @@ export default function EconomyDashboard({ user, stats, config }: IProps) {
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>💰 Economy System</h1>
-                    <p>Manage your server's complete economic ecosystem with detailed analytics.</p>
+                    <p>Manage your server&apos;s complete economic ecosystem with detailed analytics.</p>
                 </div>
 
                 {/* Server Selection */}
@@ -352,20 +352,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             },
         };
     }
-};
-    }
-
-    
-
-    
-
-    
-
-    return {
-        props: {
-            user: mockUser,
-            stats: mockStats,
-            config: mockConfig
-        }
-    };
 };

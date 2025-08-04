@@ -98,7 +98,7 @@ export default function SecurityDashboard({ user }: IProps) {
                             </div>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                                <p>No servers found. Make sure you have the "Manage Server" permission.</p>
+                                <p>No servers found. Make sure you have the &quot;Manage Server&quot; permission.</p>
                             </div>
                         )}
                     </div>
@@ -116,7 +116,7 @@ export default function SecurityDashboard({ user }: IProps) {
                     }}>
                         <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#4b5563', lineHeight: '1.6' }}>
                             <li><strong>Server-Specific Settings:</strong> Each server has its own security configuration</li>
-                            <li><strong>Permission Required:</strong> You need "Manage Server" permission to configure security</li>
+                            <li><strong>Permission Required:</strong> You need &quot;Manage Server&quot; permission to configure security</li>
                             <li><strong>Real-Time Protection:</strong> Settings take effect immediately after saving</li>
                             <li><strong>Multiple Servers:</strong> Configure different settings for each of your servers</li>
                         </ul>

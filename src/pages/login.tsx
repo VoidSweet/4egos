@@ -52,7 +52,7 @@ export default function Login() {
 
                     <div className={styles.loginFooter}>
                         <p>
-                            Don't have AegisBot in your server?{' '}
+                            Don&apos;t have AegisBot in your server?{' '}
                             <Link href="/invite">
                                 <a>Invite it now</a>
                             </Link>

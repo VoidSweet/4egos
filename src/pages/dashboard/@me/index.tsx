@@ -215,32 +215,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 };
-    }
-
-    let realUser = null;
-    
-    try {
-        // Fetch real user data from Discord API
-        const userResponse = await fetch('https://discord.com/api/users/@me', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-        
-        if (userResponse.ok) {
-            realUser = await userResponse.json();
-        }
-    } catch (error) {
-        console.error('Failed to fetch Discord user data:', error);
-    }
-
-    // Fallback mock user data
-    
-
-    return {
-        props: {
-            user: mockUser,
-            realUser: realUser || mockUser
-        }
-    };
-};

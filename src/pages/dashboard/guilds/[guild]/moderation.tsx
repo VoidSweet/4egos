@@ -153,7 +153,7 @@ export default class DashboardMe extends React.Component {
                                 data-type={'bitfield'}
                                 data-value={GuildConfigs.LOG_UNBAN}
                                 defaultChecked={(guild?.configs & GuildConfigs.LOG_UNBAN) == GuildConfigs.LOG_UNBAN}
-                            /><label style={{marginLeft: '1%', fontSize: '18px'}}><strong>Registrar evento de "unban"</strong></label></p>
+                            /><label style={{marginLeft: '1%', fontSize: '18px'}}><strong>Registrar evento de &quot;unban&quot;</strong></label></p>
                             <p>Registrar no canal de modlogs quando um banimento for retirado.<br />Para mostrar o motivo e o autor, você precisa dar ao bot permissão de <code>Ver registro de autoria</code>.</p>
                         </CheckRadio>
 

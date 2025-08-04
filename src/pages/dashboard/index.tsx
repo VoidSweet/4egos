@@ -42,7 +42,7 @@ export default function DashboardHome({ user, stats }: IProps) {
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>🎛️ Dashboard Overview</h1>
-                    <p>Welcome back! Here's what's happening with 4EgosBot</p>
+                    <p>Welcome back! Here&apos;s what&apos;s happening with 4EgosBot</p>
                 </div>
 
                 {/* Unique Stats Cards */}
