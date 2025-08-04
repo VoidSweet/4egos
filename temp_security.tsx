@@ -3,7 +3,6 @@ import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
 import styles from '../../styles/main.module.css';
@@ -80,12 +79,10 @@ export default function SecurityDashboard({ user }: IProps) {
                                     <Link key={guild.id} href={`/dashboard/guilds/${guild.id}`}>
                                         <div className={dashStyles.compactFeatureCard} style={{ height: '130px' }}>
                                             {guild.icon ? (
-                                                <Image 
+                                                <img 
                                                     src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`}
                                                     alt={guild.name}
-                                                    width={40}
-                                                    height={40}
-                                                    style={{ borderRadius: '8px', marginBottom: '0.5rem' }}
+                                                    style={{ width: '40px', height: '40px', borderRadius: '8px', marginBottom: '0.5rem' }}
                                                 />
                                             ) : (
                                                 <div className={dashStyles.compactFeatureIcon}>🏠</div>

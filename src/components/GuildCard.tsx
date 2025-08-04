@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Image from 'next/image';
 
 import styles from '../styles/GuildCard.module.css';
 
@@ -21,9 +22,12 @@ export default class GuildCard extends Component {
                             className={styles['blur']} 
                             style={{ backgroundImage: `url(${guild?.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${guild.icon.startsWith('a_') && guild.features.find(f => f == 'ANIMATED_ICON') ? 'gif' : 'png'}` : defaultAvatar})` }} 
                         />
-                        <img
+                        <Image
                             src={guild?.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${guild.icon.startsWith('a_') && guild.features.find(f => f == 'ANIMATED_ICON') ? 'gif' : 'png'}` : defaultAvatar}
-                            alt={''}
+                            alt={guild?.name || 'Guild icon'}
+                            width={80}
+                            height={80}
+                            style={{ borderRadius: '50%' }}
                         />
                     </div>
                     <div className={styles['infos']}>

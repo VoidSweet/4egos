@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import styles from '../styles/Header.module.css';
 import { IUser} from '../types';
 import { defaultAvatar } from '../Constants';
@@ -70,7 +71,13 @@ export default class Header extends React.Component {
                 <div id="avatar" className={styles["avatar"]}>
                     {user ? (
                         <>
-                            <img src={user?.avatar ? `https://cdn.discordapp.com/avatars/${user?.id}/${user?.avatar}.png` : defaultAvatar} alt="" />
+                            <Image 
+                                src={user?.avatar ? `https://cdn.discordapp.com/avatars/${user?.id}/${user?.avatar}.png` : defaultAvatar} 
+                                alt={user?.username || 'User avatar'} 
+                                width={40}
+                                height={40}
+                                style={{ borderRadius: '50%' }}
+                            />
                             <div className={styles["user-menu-wrapper"]}>
                                 <div className={styles["user-menu"]}>
                                     <div className={styles["user-menu-options"]}>

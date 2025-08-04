@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import styles from '../styles/main.module.css';
 import { IUser, IGuild } from '../types';
 import Link from 'next/link';
@@ -65,7 +66,13 @@ export default class Header extends React.Component<IProps> {
         function iconComponent() {
             if(icon) {
                 return (
-                    <img src={guild ? icon : `https://cdn.discordapp.com/avatars/${id}/${icon}.png`} alt='' />
+                    <Image 
+                        src={guild ? icon : `https://cdn.discordapp.com/avatars/${id}/${icon}.png`} 
+                        alt={name || 'User avatar'} 
+                        width={40}
+                        height={40}
+                        style={{ borderRadius: '50%' }}
+                    />
                 )
             } else {
                 const a = /[a-z]/i
