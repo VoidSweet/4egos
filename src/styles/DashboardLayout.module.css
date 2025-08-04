@@ -26,6 +26,142 @@
     font-weight: 500;
 }
 
+/* Unique Stats Grid */
+.uniqueStatsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.uniqueStatCard {
+    background: white;
+    padding: 1.8rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    height: 120px;
+}
+
+.uniqueStatCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%);
+}
+
+.uniqueStatCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 45px rgba(30, 64, 175, 0.15);
+}
+
+.uniqueStatIcon {
+    font-size: 2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    min-width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.serversCard .uniqueStatIcon {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+}
+
+.statusCard .uniqueStatIcon {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.securityCard .uniqueStatIcon {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.activityCard .uniqueStatIcon {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+}
+
+.uniqueStatContent {
+    flex: 1;
+}
+
+.uniqueStatContent h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+    font-family: 'Inter', sans-serif;
+}
+
+.uniqueStatContent p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0 0 0.5rem 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.statTrend {
+    margin-top: 0.5rem;
+}
+
+.statTrend span {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.trendUp {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.uptime {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.secure {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.activity {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.cardPattern {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.03) 50%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(25px, -25px);
+}
+
 /* Stats Grid */
 .statsGrid {
     display: grid;
@@ -88,6 +224,130 @@
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-weight: 500;
+}
+
+/* Compact Feature Grid */
+.compactFeatureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.compactFeatureCard {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    text-align: center;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.compactFeatureCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(30, 64, 175, 0.1);
+}
+
+.compactFeatureIcon {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.compactFeatureCard h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+    font-family: 'Inter', sans-serif;
+}
+
+.compactFeatureCard p {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Compact Overview */
+.compactOverview {
+    margin-bottom: 1.5rem;
+}
+
+.overviewCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+}
+
+.overviewCard h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+    font-family: 'Inter', sans-serif;
+}
+
+.overviewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.overviewGrid div {
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: #4b5563;
+}
+
+.overviewGrid strong {
+    color: #1f2937;
+}
+
+/* Compact Status */
+.compactStatus {
+    margin-bottom: 1rem;
+}
+
+.compactStatus h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+    font-family: 'Inter', sans-serif;
+}
+
+.statusGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.statusItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: #4b5563;
+}
+
+.statusIndicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.statusIndicator.online {
+    background: #10b981;
 }
 
 /* Feature Grid */

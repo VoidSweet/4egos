@@ -23,11 +23,6 @@ const _urls = {
                 name: 'Server Management',
                 url: '/dashboard/guilds',
                 icon: 'fad fa-server'
-            },
-            {
-                name: 'My Profile',
-                url: '/dashboard/@me',
-                icon: 'fad fa-user'
             }
         ]
     },
@@ -96,9 +91,11 @@ export default class Header extends React.Component<IProps> {
                 <div className={styles['top-panel']}>
                     <div className={styles['panel-content']}>
                         <div className={styles['user-section']}>
-                            <span className={styles['avatar']}>
-                                {iconComponent()}
-                            </span>
+                            <Link href="/dashboard/@me">
+                                <span className={styles['avatar']} style={{ cursor: 'pointer' }}>
+                                    {iconComponent()}
+                                </span>
+                            </Link>
                             <div className={styles['username']}>
                                 <p>{name || '...'}</p>
                             </div>

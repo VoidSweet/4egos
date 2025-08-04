@@ -24,12 +24,7 @@ interface IProps {
 }
 
 export default function DashboardHome({ user, stats }: IProps) {
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Simulate loading
-        setTimeout(() => setLoading(false), 1000);
-    }, []);
+    const [loading, setLoading] = useState(false); // Removed loading delay
 
     if (loading) {
         return <LoadingPage {...{loading}} />;
@@ -50,199 +45,150 @@ export default function DashboardHome({ user, stats }: IProps) {
                     <p>Welcome back! Here's what's happening with 4EgosBot</p>
                 </div>
 
-                {/* Quick Stats */}
-                <div className={dashStyles.statsGrid}>
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>🛡️</div>
-                        <div className={dashStyles.statContent}>
+                {/* Unique Stats Cards */}
+                <div className={dashStyles.uniqueStatsGrid}>
+                    <div className={`${dashStyles.uniqueStatCard} ${dashStyles.serversCard}`}>
+                        <div className={dashStyles.uniqueStatIcon}>
+                            <i className="fas fa-server"></i>
+                        </div>
+                        <div className={dashStyles.uniqueStatContent}>
                             <h3>{stats.totalServers}</h3>
-                            <p>Your Discord Servers</p>
+                            <p>Discord Servers</p>
+                            <div className={dashStyles.statTrend}>
+                                <span className={dashStyles.trendUp}>+2 this month</span>
+                            </div>
                         </div>
+                        <div className={dashStyles.cardPattern}></div>
                     </div>
 
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>🤖</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>4EgosBot</h3>
-                            <p>Status: {stats.uptime}</p>
+                    <div className={`${dashStyles.uniqueStatCard} ${dashStyles.statusCard}`}>
+                        <div className={dashStyles.uniqueStatIcon}>
+                            <i className="fas fa-robot"></i>
                         </div>
+                        <div className={dashStyles.uniqueStatContent}>
+                            <h3>Online</h3>
+                            <p>4EgosBot Status</p>
+                            <div className={dashStyles.statTrend}>
+                                <span className={dashStyles.uptime}>99.9% uptime</span>
+                            </div>
+                        </div>
+                        <div className={dashStyles.cardPattern}></div>
                     </div>
 
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>�</div>
-                        <div className={dashStyles.statContent}>
+                    <div className={`${dashStyles.uniqueStatCard} ${dashStyles.securityCard}`}>
+                        <div className={dashStyles.uniqueStatIcon}>
+                            <i className={user.verified ? "fas fa-shield-check" : "fas fa-shield-alt"}></i>
+                        </div>
+                        <div className={dashStyles.uniqueStatContent}>
                             <h3>{user.verified ? 'Verified' : 'Standard'}</h3>
-                            <p>Account Type</p>
+                            <p>Account Status</p>
+                            <div className={dashStyles.statTrend}>
+                                <span className={user.mfa_enabled ? dashStyles.secure : dashStyles.warning}>
+                                    {user.mfa_enabled ? '2FA Enabled' : '2FA Disabled'}
+                                </span>
+                            </div>
                         </div>
+                        <div className={dashStyles.cardPattern}></div>
                     </div>
 
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>�</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>{user.mfa_enabled ? 'Secured' : 'Basic'}</h3>
-                            <p>Security Level</p>
+                    <div className={`${dashStyles.uniqueStatCard} ${dashStyles.activityCard}`}>
+                        <div className={dashStyles.uniqueStatIcon}>
+                            <i className="fas fa-chart-line"></i>
                         </div>
+                        <div className={dashStyles.uniqueStatContent}>
+                            <h3>Active</h3>
+                            <p>Dashboard Status</p>
+                            <div className={dashStyles.statTrend}>
+                                <span className={dashStyles.activity}>Last login: Today</span>
+                            </div>
+                        </div>
+                        <div className={dashStyles.cardPattern}></div>
                     </div>
                 </div>
 
-                {/* Feature Categories */}
-                <div className={dashStyles.featureGrid}>
+                {/* Compact Feature Categories */}
+                <div className={dashStyles.compactFeatureGrid}>
                     <Link href="/dashboard/security">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>🛡️</div>
-                            <h3>Security Management</h3>
-                            <p>Anti-nuke protection, spam detection, and verification system</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Real-time monitoring</span>
-                                <span>Auto-quarantine</span>
-                                <span>Whitelist management</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>🛡️</div>
+                            <h4>Security</h4>
+                            <p>Anti-nuke & Protection</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/economy">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>💰</div>
-                            <h3>Economy System</h3>
-                            <p>Complete economic ecosystem with banking and shop integration</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Multi-currency</span>
-                                <span>Banking system</span>
-                                <span>Job rewards</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>💰</div>
+                            <h4>Economy</h4>
+                            <p>Banking & Rewards</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/leveling">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>📈</div>
-                            <h3>Leveling & XP</h3>
-                            <p>Engaging progression system with rewards and competitions</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Role rewards</span>
-                                <span>Leaderboards</span>
-                                <span>Competitions</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>📈</div>
+                            <h4>Leveling</h4>
+                            <p>XP & Progression</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/moderation">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>🔨</div>
-                            <h3>Moderation Tools</h3>
-                            <p>Professional moderation suite with auto-mod and logging</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Auto-moderation</span>
-                                <span>Warning system</span>
-                                <span>Audit logs</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>🔨</div>
+                            <h4>Moderation</h4>
+                            <p>Auto-mod & Logs</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/games">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>🎮</div>
-                            <h3>Games & Entertainment</h3>
-                            <p>Interactive games with tournaments and special events</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Trivia games</span>
-                                <span>Casino system</span>
-                                <span>Tournaments</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>🎮</div>
+                            <h4>Games</h4>
+                            <p>Entertainment</p>
                         </div>
                     </Link>
 
                     <Link href="/dashboard/console">
-                        <div className={dashStyles.featureCard}>
-                            <div className={dashStyles.featureIcon}>🛠️</div>
-                            <h3>Utility Features</h3>
-                            <p>Essential server utilities and custom integrations</p>
-                            <div className={dashStyles.featureItems}>
-                                <span>Welcome system</span>
-                                <span>Reaction roles</span>
-                                <span>Ticket system</span>
-                            </div>
+                        <div className={dashStyles.compactFeatureCard}>
+                            <div className={dashStyles.compactFeatureIcon}>🛠️</div>
+                            <h4>Utilities</h4>
+                            <p>Tools & Features</p>
                         </div>
                     </Link>
                 </div>
 
-                {/* Recent Activity - Using Real Discord Data */}
-                <div className={dashStyles.activitySection}>
-                    <h2>🎛️ Your Discord Overview</h2>
-                    <div className={dashStyles.activityGrid}>
-                        <div className={dashStyles.activityCard}>
-                            <h4>� Account Information</h4>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>Username</span>
-                                <span>{user.username}#{user.discriminator}</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>User ID</span>
-                                <span>{user.id}</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>Verified</span>
-                                <span>{user.verified ? '✅ Verified' : '❌ Not Verified'}</span>
-                            </div>
-                        </div>
-
-                        <div className={dashStyles.activityCard}>
-                            <h4>�️ Security Features</h4>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>2FA</span>
-                                <span>{user.mfa_enabled ? '🔒 Enabled' : '⚠️ Disabled'}</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>Server Count</span>
-                                <span>{stats.totalServers} servers</span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>Locale</span>
-                                <span>{user.locale || 'en-US'}</span>
-                            </div>
-                        </div>
-
-                        <div className={dashStyles.activityCard}>
-                            <h4>🎯 Quick Actions</h4>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>🏠</span>
-                                <span><a href="/dashboard">Dashboard Home</a></span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>⚙️</span>
-                                <span><a href="/dashboard/guilds">Manage Servers</a></span>
-                            </div>
-                            <div className={dashStyles.activityItem}>
-                                <span className={dashStyles.activityTime}>👤</span>
-                                <span><a href="/dashboard/@me">My Profile</a></span>
-                            </div>
+                {/* Compact Quick Overview */}
+                <div className={dashStyles.compactOverview}>
+                    <div className={dashStyles.overviewCard}>
+                        <h4>👤 Account Overview</h4>
+                        <div className={dashStyles.overviewGrid}>
+                            <div><strong>Username:</strong> {user.username}#{user.discriminator}</div>
+                            <div><strong>Status:</strong> {user.verified ? '✅ Verified' : '❌ Standard'}</div>
+                            <div><strong>Security:</strong> {user.mfa_enabled ? '🔒 2FA Enabled' : '⚠️ 2FA Disabled'}</div>
+                            <div><strong>Servers:</strong> {stats.totalServers} connected</div>
                         </div>
                     </div>
                 </div>
 
-                {/* System Status */}
-                <div className={dashStyles.statusSection}>
-                    <h2>⚡ System Status</h2>
+                {/* Compact System Status */}
+                <div className={dashStyles.compactStatus}>
+                    <h4>⚡ System Status</h4>
                     <div className={dashStyles.statusGrid}>
                         <div className={dashStyles.statusItem}>
                             <div className={dashStyles.statusIndicator + ' ' + dashStyles.online}></div>
                             <span>Bot Online</span>
-                            <span className={dashStyles.statusValue}>99.9% uptime</span>
                         </div>
                         <div className={dashStyles.statusItem}>
                             <div className={dashStyles.statusIndicator + ' ' + dashStyles.online}></div>
-                            <span>Security System</span>
-                            <span className={dashStyles.statusValue}>Active</span>
+                            <span>Security Active</span>
                         </div>
                         <div className={dashStyles.statusItem}>
                             <div className={dashStyles.statusIndicator + ' ' + dashStyles.online}></div>
-                            <span>Economy System</span>
-                            <span className={dashStyles.statusValue}>Operational</span>
+                            <span>Economy Running</span>
                         </div>
                         <div className={dashStyles.statusItem}>
                             <div className={dashStyles.statusIndicator + ' ' + dashStyles.online}></div>
-                            <span>Database</span>
-                            <span className={dashStyles.statusValue}>Healthy</span>
+                            <span>Database Healthy</span>
                         </div>
                     </div>
                 </div>

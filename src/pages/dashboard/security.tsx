@@ -2,53 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
+import Link from 'next/link';
 import LeftMenu from '../../components/LeftMenu';
 import LoadingPage from '../../components/LoadingPage';
-import Toggle, { CheckRadio } from '../../components/Toggle';
 import styles from '../../styles/main.module.css';
 import dashStyles from '../../styles/DashboardLayout.module.css';
-import securityStyles from '../../styles/security.module.css';
 import { IUser } from '../../types';
-
-interface ISecurityConfig {
-    antiNuke: {
-        enabled: boolean;
-        autoQuarantine: boolean;
-        panicMode: boolean;
-        channelDeleteLimit: number;
-        roleDeleteLimit: number;
-        massBanLimit: number;
-        massKickLimit: number;
-        webhookSpamLimit: number;
-    };
-    heatSystem: {
-        enabled: boolean;
-        baseThreshold: number;
-        decayRate: number;
-        messageSpamHeat: number;
-        mentionSpamHeat: number;
-        emojiSpamHeat: number;
-        capsSpamHeat: number;
-    };
-    verification: {
-        enabled: boolean;
-        verificationMode: 'captcha' | 'manual' | 'disabled';
-        accountAgeCheck: boolean;
-        minimumAgeHours: number;
-        activityMonitoring: boolean;
-    };
-}
 
 interface IProps {
     user: IUser;
-    config: ISecurityConfig;
 }
 
-export default function SecurityDashboard({ user, config }: IProps) {
-    const [loading, setLoading] = useState(true);
-    const [securityConfig, setSecurityConfig] = useState<ISecurityConfig>(config);
-    const [saving, setSaving] = useState(false);
-    const [selectedGuildId, setSelectedGuildId] = useState<string>('');
+export default function SecurityDashboard({ user }: IProps) {
+    const [loading, setLoading] = useState(false);
     const [userGuilds, setUserGuilds] = useState<any[]>([]);
 
     useEffect(() => {
@@ -65,58 +31,7 @@ export default function SecurityDashboard({ user, config }: IProps) {
             }
         };
         fetchGuilds();
-        setTimeout(() => setLoading(false), 1000);
     }, []);
-
-    const handleGuildSelect = async (guildId: string) => {
-        setSelectedGuildId(guildId);
-        setLoading(true);
-        
-        try {
-            // Fetch guild-specific security configuration
-            const response = await fetch(`/api/guilds/${guildId}/security`);
-            
-            if (response.ok) {
-                const guildConfig = await response.json();
-                setSecurityConfig(guildConfig);
-            }
-        } catch (error) {
-            console.error('Failed to fetch guild security config:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const isConfigDisabled = !selectedGuildId;
-
-    const handleSave = async () => {
-        if (!selectedGuildId) {
-            alert('Please select a server first!');
-            return;
-        }
-
-        setSaving(true);
-        try {
-            const response = await fetch(`/api/guilds/${selectedGuildId}/security`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(securityConfig)
-            });
-
-            if (response.ok) {
-                alert('Security settings saved successfully!');
-            } else {
-                throw new Error('Failed to save settings');
-            }
-        } catch (error) {
-            console.error('Save error:', error);
-            alert('Failed to save settings. Please try again.');
-        } finally {
-            setSaving(false);
-        }
-    };
 
     if (loading) {
         return <LoadingPage {...{loading}} />;
@@ -125,257 +40,143 @@ export default function SecurityDashboard({ user, config }: IProps) {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Security Management</title>
-                <meta name="description" content="Comprehensive security management for Discord servers" />
+                <title>4EgosBot Dashboard - Security Overview</title>
+                <meta name="description" content="Security management overview" />
             </Head>
 
-            <LeftMenu {...{user}} saveButton={!!selectedGuildId} onSave={handleSave} saving={saving} />
+            <LeftMenu {...{user}} />
 
             <div className={styles.content}>
                 <div className={dashStyles.dashboardHeader}>
                     <h1>🛡️ Security Management</h1>
-                    <p>Protect your Discord server with advanced security features and monitoring.</p>
+                    <p>Select a server to manage its security settings</p>
+                </div>
+
+                {/* Security Overview */}
+                <div className={dashStyles.compactOverview}>
+                    <div className={dashStyles.overviewCard}>
+                        <h4>🔒 Security Features Overview</h4>
+                        <div className={dashStyles.overviewGrid}>
+                            <div><strong>Anti-Nuke:</strong> Protection against malicious activities</div>
+                            <div><strong>Heat System:</strong> Advanced spam detection and prevention</div>
+                            <div><strong>Verification:</strong> User verification and account age checks</div>
+                            <div><strong>Whitelisting:</strong> Trusted user management</div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Server Selection */}
-                <div className={dashStyles.serverSelection}>
-                    <h3>Select a Server to Configure:</h3>
-                    <select 
-                        value={selectedGuildId} 
-                        onChange={(e) => handleGuildSelect(e.target.value)}
-                        className={dashStyles.serverSelect}
-                    >
-                        <option value="">Choose a server...</option>
-                        {userGuilds.map(guild => (
-                            <option key={guild.id} value={guild.id}>
-                                {guild.name}
-                            </option>
-                        ))}
-                    </select>
-                    {!selectedGuildId && (
-                        <p className={dashStyles.helpText}>
-                            ⚠️ Please select a server to configure security settings.
+                <div className={dashStyles.compactOverview}>
+                    <div className={dashStyles.overviewCard}>
+                        <h4>⚙️ Select Server to Manage</h4>
+                        <p style={{ marginBottom: '1rem', color: '#6b7280', fontSize: '0.9rem' }}>
+                            Security settings are configured per server. Choose a server below to manage its specific security configuration.
                         </p>
-                    )}
-                </div>
-
-                {/* Security Overview Stats */}
-                <div className={dashStyles.statsGrid}>
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>⚡</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>Active</h3>
-                            <p>Protection Status</p>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>🚨</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>247</h3>
-                            <p>Threats Blocked Today</p>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>🔒</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>3</h3>
-                            <p>Users Quarantined</p>
-                        </div>
-                    </div>
-
-                    <div className={dashStyles.statCard}>
-                        <div className={dashStyles.statIcon}>👥</div>
-                        <div className={dashStyles.statContent}>
-                            <h3>15</h3>
-                            <p>Whitelisted Users</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Anti-Nuke Protection */}
-                <div className={securityStyles.securitySection}>
-                    <h2>🚫 Anti-Nuke Protection</h2>
-                    <p>Protect your server from malicious attacks and mass deletions.</p>
-                    
-                    <div className={securityStyles.configCard}>
-                        <div className={securityStyles.configRow}>
-                            <CheckRadio>
-                                <Toggle 
-                                    defaultChecked={securityConfig.antiNuke.enabled}
-                                    disabled={isConfigDisabled}
-                                    onChange={(checked) => setSecurityConfig(prev => ({
-                                        ...prev,
-                                        antiNuke: { ...prev.antiNuke, enabled: checked }
-                                    }))}
-                                />
-                                <label><strong>Enable Anti-Nuke Protection</strong></label>
-                                <p>Automatically detect and prevent server nuking attempts</p>
-                            </CheckRadio>
-                        </div>
-
-                        <div className={securityStyles.configRow}>
-                            <CheckRadio>
-                                <Toggle 
-                                    defaultChecked={securityConfig.antiNuke.autoQuarantine}
-                                    disabled={isConfigDisabled}
-                                    onChange={(checked) => setSecurityConfig(prev => ({
-                                        ...prev,
-                                        antiNuke: { ...prev.antiNuke, autoQuarantine: checked }
-                                    }))}
-                                />
-                                <label><strong>Auto-Quarantine Attackers</strong></label>
-                                <p>Automatically quarantine users who trigger protection</p>
-                            </CheckRadio>
-                        </div>
-
-                        <div className={securityStyles.configGroup}>
-                            <h4>Detection Limits</h4>
-                            <div className={securityStyles.limitGrid}>
-                                <div className={securityStyles.limitItem}>
-                                    <label>Channel Deletes (per 30s)</label>
-                                    <input 
-                                        type="number" 
-                                        value={securityConfig.antiNuke.channelDeleteLimit}
-                                        onChange={(e) => setSecurityConfig(prev => ({
-                                            ...prev,
-                                            antiNuke: { ...prev.antiNuke, channelDeleteLimit: parseInt(e.target.value) }
-                                        }))}
-                                        min="1" 
-                                        max="20" 
-                                    />
-                                </div>
-
-                                <div className={securityStyles.limitItem}>
-                                    <label>Role Deletes (per 30s)</label>
-                                    <input 
-                                        type="number" 
-                                        value={securityConfig.antiNuke.roleDeleteLimit}
-                                        onChange={(e) => setSecurityConfig(prev => ({
-                                            ...prev,
-                                            antiNuke: { ...prev.antiNuke, roleDeleteLimit: parseInt(e.target.value) }
-                                        }))}
-                                        min="1" 
-                                        max="20" 
-                                    />
-                                </div>
-
-                                <div className={securityStyles.limitItem}>
-                                    <label>Mass Bans (per 30s)</label>
-                                    <input 
-                                        type="number" 
-                                        value={securityConfig.antiNuke.massBanLimit}
-                                        onChange={(e) => setSecurityConfig(prev => ({
-                                            ...prev,
-                                            antiNuke: { ...prev.antiNuke, massBanLimit: parseInt(e.target.value) }
-                                        }))}
-                                        min="1" 
-                                        max="50" 
-                                    />
-                                </div>
-
-                                <div className={securityStyles.limitItem}>
-                                    <label>Mass Kicks (per 60s)</label>
-                                    <input 
-                                        type="number" 
-                                        value={securityConfig.antiNuke.massKickLimit}
-                                        onChange={(e) => setSecurityConfig(prev => ({
-                                            ...prev,
-                                            antiNuke: { ...prev.antiNuke, massKickLimit: parseInt(e.target.value) }
-                                        }))}
-                                        min="1" 
-                                        max="100" 
-                                    />
-                                </div>
+                        
+                        {userGuilds.length > 0 ? (
+                            <div className={dashStyles.compactFeatureGrid}>
+                                {userGuilds.map((guild) => (
+                                    <Link key={guild.id} href={`/dashboard/guilds/${guild.id}`}>
+                                        <div className={dashStyles.compactFeatureCard} style={{ height: '130px' }}>
+                                            {guild.icon ? (
+                                                <img 
+                                                    src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`}
+                                                    alt={guild.name}
+                                                    style={{ width: '40px', height: '40px', borderRadius: '8px', marginBottom: '0.5rem' }}
+                                                />
+                                            ) : (
+                                                <div className={dashStyles.compactFeatureIcon}>🏠</div>
+                                            )}
+                                            <h4>{guild.name}</h4>
+                                            <p>Configure Security</p>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
-                        </div>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                                <p>No servers found. Make sure you have the "Manage Server" permission.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* Save Button */}
-                <div className={securityStyles.saveSection}>
-                    <button 
-                        className={securityStyles.saveButton}
-                        onClick={handleSave}
-                        disabled={saving}
-                    >
-                        {saving ? (
-                            <>
-                                <i className="fas fa-spinner fa-spin"></i>
-                                Saving Configuration...
-                            </>
-                        ) : (
-                            <>
-                                <i className="fas fa-save"></i>
-                                Save Security Settings
-                            </>
-                        )}
-                    </button>
+                {/* Security Information */}
+                <div className={dashStyles.compactStatus}>
+                    <h4>📋 Security Management Guidelines</h4>
+                    <div style={{ 
+                        background: 'white', 
+                        padding: '1.5rem', 
+                        borderRadius: '12px', 
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+                        border: '1px solid #e5e7eb'
+                    }}>
+                        <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#4b5563', lineHeight: '1.6' }}>
+                            <li><strong>Server-Specific Settings:</strong> Each server has its own security configuration</li>
+                            <li><strong>Permission Required:</strong> You need "Manage Server" permission to configure security</li>
+                            <li><strong>Real-Time Protection:</strong> Settings take effect immediately after saving</li>
+                            <li><strong>Multiple Servers:</strong> Configure different settings for each of your servers</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>
     );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const { token } = parseCookies(ctx);
-    
+    const { ['__SessionLuny']: token } = parseCookies(ctx);
+
     if (!token) {
+        const redirectUrl = ctx.resolvedUrl || '/dashboard/security';
         return {
             redirect: {
-                destination: '/api/auth/login',
+                destination: `/api/auth/login?state=${encodeURIComponent(redirectUrl)}`,
                 permanent: false,
-            },
+            }
         };
     }
 
     try {
         // Fetch real user data from Discord
         const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         });
-        
+
         if (!userResponse.ok) {
             throw new Error('Failed to fetch user data');
         }
-        
+
         const userData = await userResponse.json();
-        
+
+        const user: IUser = {
+            id: userData.id,
+            username: userData.username,
+            discriminator: userData.discriminator,
+            avatar: userData.avatar,
+            verified: userData.verified,
+            mfa_enabled: userData.mfa_enabled,
+            locale: userData.locale,
+            flags: userData.flags,
+            public_flags: userData.public_flags
+        };
+
         return {
             props: {
-                user: {
-                    id: userData.id,
-                    username: userData.username,
-                    discriminator: userData.discriminator,
-                    avatar: userData.avatar,
-                    verified: userData.verified,
-                    public_flags: userData.public_flags
-                }
+                user
             }
         };
+
     } catch (error) {
         console.error('Error fetching user data:', error);
+        
         return {
             redirect: {
                 destination: '/api/auth/login',
                 permanent: false,
-            },
+            }
         };
     }
-};
-    }
-
-    // Mock security configuration
-    
-
-    
-
-    return {
-        props: {
-            user: mockUser,
-            config: mockConfig
-        }
-    };
 };
