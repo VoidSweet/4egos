@@ -1,8 +1,17 @@
 import generateOAuth2 from "../../../utils/generateOAuth2";
-import { setCookie } from 'nookies';
+import { setCookie, parseCookies } from 'nookies';
 import config from '../../../config';
 
 export default (req, res) => {
+    // Check if user is already authenticated
+    const { ['__SessionLuny']: existingToken } = parseCookies({ req });
+    
+    if (existingToken) {
+        // User is already authenticated, redirect to dashboard or state
+        const redirectTo = req.query.state || '/dashboard';
+        return res.redirect(redirectTo);
+    }
+
     if(req.query.dt == "true") {
         setCookie({ res }, '__SessionLuny', '', {
             maxAge: 0,
@@ -17,7 +26,7 @@ export default (req, res) => {
         redirect_uri: config.discord.redirectUri,
         scopes: ["identify", "guilds"],
         state: req.query.state || null,
-        prompt: "none"
+        prompt: "none" // This prevents Discord from showing login if already logged in
     });
 
     res.redirect(url);

@@ -1,52 +1,76 @@
-/* Dashboard Layout Styles */
+/* Dashboard Layout Styles - Material Design inspired 8px grid system */
+.dashboardContainer {
+    padding: 24px; /* 3 * 8px */
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 .dashboardHeader {
-    margin-bottom: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%); /* Blue gradient theme */
-    border-radius: 20px;
+    margin-bottom: 32px; /* 4 * 8px */
+    padding: 32px; /* 4 * 8px */
+    background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%);
+    border-radius: 16px; /* 2 * 8px */
     color: white;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 60px rgba(30, 64, 175, 0.3); /* Blue shadow */
+    box-shadow: 0 8px 32px rgba(30, 64, 175, 0.2); /* Softer shadow following Material Design */
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboardHeader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
 }
 
 .dashboardHeader h1 {
-    font-size: 2.75rem;
-    font-weight: 800;
-    margin-bottom: 0.75rem;
+    font-size: 2.5rem; /* Reduced for better hierarchy */
+    font-weight: 700; /* Material Design weight */
+    margin-bottom: 8px; /* 1 * 8px */
     font-family: 'Inter', sans-serif;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
 }
 
 .dashboardHeader p {
-    font-size: 1.25rem;
+    font-size: 1.125rem; /* 18px for better readability */
     opacity: 0.9;
     margin: 0;
     font-family: 'Inter', sans-serif;
-    font-weight: 500;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
 }
 
-/* Unique Stats Grid */
+/* Unique Stats Grid - Following Material Design spacing */
 .uniqueStatsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 16px; /* 2 * 8px - Material Design spacing */
+    margin-bottom: 32px; /* 4 * 8px */
 }
 
 .uniqueStatCard {
     background: white;
-    padding: 1.8rem;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 24px; /* 3 * 8px */
+    border-radius: 12px; /* Material Design corner radius */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1); /* Material Design elevation 2 */
+    border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    transition: all 0.3s ease;
+    gap: 16px; /* 2 * 8px */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Material Design easing */
     position: relative;
     overflow: hidden;
-    height: 120px;
+    min-height: 104px; /* 13 * 8px */
+    cursor: pointer;
 }
 
 .uniqueStatCard::before {
@@ -55,27 +79,28 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 4px;
     background: linear-gradient(90deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%);
 }
 
 .uniqueStatCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 45px rgba(30, 64, 175, 0.15);
+    transform: translateY(-2px); /* Subtle lift on hover */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08); /* Material Design elevation 4 */
 }
 
 .uniqueStatIcon {
     font-size: 2rem;
-    padding: 1rem;
-    border-radius: 12px;
+    padding: 12px; /* 1.5 * 8px */
+    border-radius: 8px; /* 1 * 8px */
     color: white;
     text-align: center;
-    min-width: 60px;
-    height: 60px;
+    min-width: 48px; /* 6 * 8px */
+    height: 48px; /* 6 * 8px */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
 .serversCard .uniqueStatIcon {
@@ -99,31 +124,34 @@
 }
 
 .uniqueStatContent h3 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem; /* 24px - Material Design headline 6 */
+    font-weight: 600; /* Material Design medium weight */
+    margin: 0 0 4px 0; /* 0.5 * 8px bottom margin */
     color: #1f2937;
     font-family: 'Inter', sans-serif;
+    line-height: 1.2;
 }
 
 .uniqueStatContent p {
-    font-size: 0.9rem;
+    font-size: 0.875rem; /* 14px - Material Design body 2 */
     color: #6b7280;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 8px 0; /* 1 * 8px bottom margin */
     font-family: 'Inter', sans-serif;
-    font-weight: 500;
+    font-weight: 400;
+    line-height: 1.4;
 }
 
 .statTrend {
-    margin-top: 0.5rem;
+    margin-top: 8px; /* 1 * 8px */
 }
 
 .statTrend span {
-    font-size: 0.75rem;
-    padding: 3px 8px;
+    font-size: 0.75rem; /* 12px - Material Design caption */
+    padding: 4px 8px; /* 0.5 * 8px vertical, 1 * 8px horizontal */
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 500;
     font-family: 'Inter', sans-serif;
+    display: inline-block;
 }
 
 .trendUp {
@@ -226,124 +254,140 @@
     font-weight: 500;
 }
 
-/* Compact Feature Grid */
+/* Compact Feature Grid - Material Design spacing */
 .compactFeatureGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Slightly larger for better content */
+    gap: 16px; /* 2 * 8px */
+    margin-bottom: 32px; /* 4 * 8px */
 }
 
 .compactFeatureCard {
     background: white;
-    padding: 1.2rem;
+    padding: 20px; /* 2.5 * 8px */
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e7eb;
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1); /* Material Design elevation 2 */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
-    height: 110px;
+    min-height: 120px; /* 15 * 8px */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
 .compactFeatureCard:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(30, 64, 175, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08); /* Material Design elevation 4 */
+    text-decoration: none;
+    color: inherit;
 }
 
 .compactFeatureIcon {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.75rem; /* 28px */
+    margin-bottom: 8px; /* 1 * 8px */
 }
 
 .compactFeatureCard h4 {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px - Material Design body 1 */
     font-weight: 600;
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 4px 0; /* 0.5 * 8px bottom margin */
     color: #1f2937;
     font-family: 'Inter', sans-serif;
+    line-height: 1.25;
 }
 
 .compactFeatureCard p {
-    font-size: 0.75rem;
+    font-size: 0.75rem; /* 12px - Material Design caption */
     color: #6b7280;
     margin: 0;
     font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.33;
 }
 
-/* Compact Overview */
+/* Compact Overview - Material Design spacing */
 .compactOverview {
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px; /* 3 * 8px */
 }
 
 .overviewCard {
     background: white;
-    padding: 1.5rem;
+    padding: 24px; /* 3 * 8px */
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .overviewCard h4 {
-    font-size: 1.1rem;
+    font-size: 1.125rem; /* 18px - Material Design headline 6 */
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 16px; /* 2 * 8px */
     color: #1f2937;
     font-family: 'Inter', sans-serif;
+    line-height: 1.2;
 }
 
 .overviewGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Slightly larger for readability */
+    gap: 12px; /* 1.5 * 8px */
 }
 
 .overviewGrid div {
-    font-size: 0.85rem;
+    font-size: 0.875rem; /* 14px - Material Design body 2 */
     font-family: 'Inter', sans-serif;
     color: #4b5563;
+    line-height: 1.4;
+    padding: 4px 0; /* 0.5 * 8px vertical padding for touch targets */
 }
 
 .overviewGrid strong {
     color: #1f2937;
+    font-weight: 600;
 }
 
-/* Compact Status */
+/* Compact Status - Material Design spacing */
 .compactStatus {
-    margin-bottom: 1rem;
+    margin-bottom: 16px; /* 2 * 8px */
 }
 
 .compactStatus h4 {
-    font-size: 1.1rem;
+    font-size: 1.125rem; /* 18px - Material Design headline 6 */
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 16px; /* 2 * 8px */
     color: #1f2937;
     font-family: 'Inter', sans-serif;
+    line-height: 1.2;
 }
 
 .statusGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Slightly larger for better spacing */
+    gap: 12px; /* 1.5 * 8px */
 }
 
 .statusItem {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
+    gap: 8px; /* 1 * 8px */
+    font-size: 0.875rem; /* 14px - Material Design body 2 */
     font-family: 'Inter', sans-serif;
     color: #4b5563;
+    padding: 4px 0; /* 0.5 * 8px vertical padding for touch targets */
+    line-height: 1.4;
 }
 
 .statusIndicator {
-    width: 8px;
-    height: 8px;
+    width: 8px; /* 1 * 8px */
+    height: 8px; /* 1 * 8px */
     border-radius: 50%;
     background: #10b981;
+    flex-shrink: 0;
 }
 
 .statusIndicator.online {
