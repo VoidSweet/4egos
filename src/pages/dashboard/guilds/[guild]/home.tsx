@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from '../../../../styles/GuildDashboard.module.css';
 import ActivityConsole from '../../../../components/ActivityConsole';
+import NotificationBadge from '../../../../components/NotificationBadge';
 import { IUser } from '../../../../types';
 
 interface IGuild {
@@ -40,6 +41,24 @@ interface BotStats {
     };
 }
 
+interface NotificationCounts {
+    total: number;
+    unread: number;
+    byType: {
+        moderation: number;
+        security: number;
+        system: number;
+        update: number;
+        warning: number;
+    };
+    bySeverity: {
+        low: number;
+        medium: number;
+        high: number;
+        critical: number;
+    };
+}
+
 interface IProps {
     user: IUser;
     guild: IGuild;
@@ -52,10 +71,13 @@ export default function GuildDashboard({ user, guild }: IProps) {
     const [activeModule, setActiveModule] = useState('home');
     const [botStats, setBotStats] = useState<BotStats | null>(null);
     const [loadingStats, setLoadingStats] = useState(true);
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const [notificationCounts, setNotificationCounts] = useState<NotificationCounts | null>(null);
 
     useEffect(() => {
         if (guildId && typeof guildId === 'string') {
             fetchBotStats(guildId);
+            fetchNotifications(guildId);
         }
     }, [guildId]);
 
@@ -73,6 +95,18 @@ export default function GuildDashboard({ user, guild }: IProps) {
         }
     };
 
+    const fetchNotifications = async (guildId: string) => {
+        try {
+            const response = await fetch(`/api/bot/${guildId}/notifications`);
+            if (response.ok) {
+                const data = await response.json();
+                setNotificationCounts(data.counts);
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
+
     const getGuildIconUrl = () => {
         if (guild.icon) {
             return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
@@ -87,30 +121,53 @@ export default function GuildDashboard({ user, guild }: IProps) {
         return '/images/default_avatar.png';
     };
 
-    const dashboardModules = [
+    const dashboardModules: Array<{
+        id: string;
+        name: string;
+        icon: string;
+        badge: number;
+        severity: 'low' | 'medium' | 'high' | 'critical';
+        items: Array<{ name: string; href: string; icon: string; }>;
+    }> = [
         {
             id: 'general',
             name: 'General Settings',
             icon: 'fas fa-cog',
-            badge: '5',
+            badge: notificationCounts?.byType.system || 0,
+            severity: 'low',
             items: [
                 { name: 'Overview', href: `/dashboard/guilds/${guildId}`, icon: 'fas fa-home' },
-                { name: 'Commands', href: `/dashboard/guilds/${guildId}/commands`, icon: 'fas fa-terminal' },
-                { name: 'Messages', href: `/dashboard/guilds/${guildId}/messages`, icon: 'fas fa-envelope' },
+                { name: 'General Settings', href: `/dashboard/guilds/${guildId}/settings`, icon: 'fas fa-cog' },
                 { name: 'Custom Branding', href: `/dashboard/guilds/${guildId}/branding`, icon: 'fas fa-palette' },
+                { name: 'Commands', href: `/dashboard/guilds/${guildId}/commands`, icon: 'fas fa-terminal' },
             ]
         },
         {
             id: 'moderation',
             name: 'Auto Moderation',
             icon: 'fas fa-shield-alt',
+            badge: notificationCounts?.byType.moderation || 0,
+            severity: 'medium',
             items: [
                 { name: 'Moderation', href: `/dashboard/guilds/${guildId}/moderation`, icon: 'fas fa-gavel' },
+                { name: 'Mod Logs', href: `/dashboard/guilds/${guildId}/modlogs`, icon: 'fas fa-clipboard-list' },
+                { name: 'Permissions', href: `/dashboard/guilds/${guildId}/permissions`, icon: 'fas fa-key' },
                 { name: 'Join Roles', href: `/dashboard/guilds/${guildId}/join-roles`, icon: 'fas fa-user-plus' },
                 { name: 'Reaction Roles', href: `/dashboard/guilds/${guildId}/reaction-roles`, icon: 'fas fa-smile' },
                 { name: 'Welcome Messages', href: `/dashboard/guilds/${guildId}/welcome`, icon: 'fas fa-hand-wave' },
-                { name: 'Role Connections', href: `/dashboard/guilds/${guildId}/role-connections`, icon: 'fas fa-link' },
-                { name: 'Logging', href: `/dashboard/guilds/${guildId}/logging`, icon: 'fas fa-clipboard-list' },
+            ]
+        },
+        {
+            id: 'security',
+            name: 'Security & Safety',
+            icon: 'fas fa-lock',
+            badge: notificationCounts?.byType.security || 0,
+            severity: notificationCounts?.bySeverity.critical ? 'critical' : notificationCounts?.bySeverity.high ? 'high' : 'medium',
+            items: [
+                { name: 'Security', href: `/dashboard/guilds/${guildId}/security`, icon: 'fas fa-shield-alt' },
+                { name: 'Anti-Raid', href: `/dashboard/guilds/${guildId}/anti-raid`, icon: 'fas fa-users-slash' },
+                { name: 'Auto-Moderation', href: `/dashboard/guilds/${guildId}/automod`, icon: 'fas fa-robot' },
+                { name: 'Backup & Recovery', href: `/dashboard/guilds/${guildId}/backup`, icon: 'fas fa-download' },
             ]
         }
     ];
@@ -154,6 +211,34 @@ export default function GuildDashboard({ user, guild }: IProps) {
                                 {user.username}
                                 {user.discriminator !== '0' && `#${user.discriminator}`}
                             </span>
+                            <button 
+                                className={styles.userDropdownBtn}
+                                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                            >
+                                <i className="fas fa-chevron-down"></i>
+                            </button>
+                            
+                            {showUserDropdown && (
+                                <div className={styles.userDropdown}>
+                                    <Link href="/dashboard/@me" className={styles.dropdownItem}>
+                                        <i className="fas fa-user"></i>
+                                        Profile
+                                    </Link>
+                                    <Link href="/dashboard/billing" className={styles.dropdownItem}>
+                                        <i className="fas fa-credit-card"></i>
+                                        Billing
+                                    </Link>
+                                    <Link href="/dashboard" className={styles.dropdownItem}>
+                                        <i className="fas fa-server"></i>
+                                        Server Selection
+                                    </Link>
+                                    <hr className={styles.dropdownDivider} />
+                                    <a href="/api/auth/logout" className={styles.dropdownItem}>
+                                        <i className="fas fa-sign-out-alt"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -177,11 +262,17 @@ export default function GuildDashboard({ user, guild }: IProps) {
                                 {dashboardModules.map(module => (
                                     <div key={module.id} className={styles.module}>
                                         <div className={styles.moduleHeader}>
-                                            <i className={module.icon}></i>
+                                            <div className={styles.moduleIconWrapper}>
+                                                <i className={module.icon}></i>
+                                                {module.badge > 0 && (
+                                                    <NotificationBadge 
+                                                        count={module.badge} 
+                                                        severity={module.severity}
+                                                        size="small"
+                                                    />
+                                                )}
+                                            </div>
                                             <span>{module.name}</span>
-                                            {module.badge && (
-                                                <span className={styles.moduleBadge}>{module.badge}</span>
-                                            )}
                                         </div>
                                         
                                         <div className={styles.moduleItems}>
