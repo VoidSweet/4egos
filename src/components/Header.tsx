@@ -43,7 +43,7 @@ export default class Header extends React.Component {
 
         return (
             <header className={styles["header"] + " " + styles["onTop"]}>
-                <Link href='/'>
+                <Link href='/' className={styles["logo"]}>
                     <svg
                         className={styles["icon"]} 
                         version="1.1" 
@@ -81,19 +81,19 @@ export default class Header extends React.Component {
                             <div className={styles["user-menu-wrapper"]}>
                                 <div className={styles["user-menu"]}>
                                     <div className={styles["user-menu-options"]}>
-                                        <Link href={"/dashboard/@me"}>
+                                        <Link href={"/dashboard/@me"} className={styles["user-menu-item"]}>
                                             <div style={{marginTop: "0"}}>
                                                 <i className={"fas fa-tools"}></i>
                                                 Dashboard
                                             </div>
                                         </Link>
-                                        <Link href={"/commands"}>
+                                        <Link href={"/commands"} className={styles["user-menu-item"]}>
                                             <div>
                                                 <i className={"fas fa-project-diagram"}></i>
                                                 Commands
                                             </div>
                                         </Link>
-                                        <a href={"/api/auth/logout"}>
+                                        <a href={"/api/auth/logout"} className={styles["user-menu-item"]}>
                                             <div>
                                                 <i className={"fas fa-sign-out-alt"} style={{color: "var(--luny-colors-red)"}}></i>
                                                 Logout

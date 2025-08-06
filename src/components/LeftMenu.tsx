@@ -98,8 +98,8 @@ export default class Header extends React.Component<IProps> {
                 <div className={styles['top-panel']}>
                     <div className={styles['panel-content']}>
                         <div className={styles['user-section']}>
-                            <Link href="/dashboard/@me">
-                                <span className={styles['avatar']} style={{ cursor: 'pointer' }}>
+                            <Link href="/dashboard/@me" className={styles['avatar']} style={{ cursor: 'pointer' }}>
+                                <span>
                                     {iconComponent()}
                                 </span>
                             </Link>

@@ -22,17 +22,13 @@ export default function HomePage() {
                         </p>
                         
                         <div className={styles.heroButtons}>
-                            <Link href="/dashboard">
-                                <a className={styles.primaryBtn}>
-                                    <i className="fas fa-tachometer-alt"></i>
-                                    Open dashboard
-                                </a>
+                            <Link href="/dashboard" className={styles.primaryBtn}>
+                                <i className="fas fa-tachometer-alt"></i>
+                                Open dashboard
                             </Link>
-                            <Link href="/invite">
-                                <a className={styles.secondaryBtn}>
-                                    <i className="fab fa-discord"></i>
-                                    Add to Discord
-                                </a>
+                            <Link href="/invite" className={styles.secondaryBtn}>
+                                <i className="fab fa-discord"></i>
+                                Add to Discord
                             </Link>
                         </div>
                     </div>
@@ -147,11 +143,9 @@ export default function HomePage() {
                 <div className={styles.container}>
                     <h2>Ready to Transform Your Discord Server?</h2>
                     <p>Join thousands of server owners who trust AegisBot for professional Discord management.</p>
-                    <Link href="/login">
-                        <a className={styles.ctaBtn}>
-                            <i className="fab fa-discord"></i>
-                            Get Started Now
-                        </a>
+                    <Link href="/login" className={styles.ctaBtn}>
+                        <i className="fab fa-discord"></i>
+                        Get Started Now
                     </Link>
                 </div>
             </div>

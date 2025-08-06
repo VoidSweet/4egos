@@ -1,86 +1,41 @@
-.l-overlay .f, .l-overlay .s{
+.loadingOverlay {
     position: fixed;
-    width: 50%;
-    height: 100vh;
-    z-index: 1001;
     top: 0;
-    background: var(--luny-colors-band-100);
-    transition: none; /* Remove animation */
-}
-  
-.ll-overlay {
-    position: fixed;
-    top: -200%;
-    opacity: 0;
-}
-  
-.ll-overlay.active {
-    top: 0;
-    opacity: 1;
     left: 0;
-    background: white;
     width: 100%;
     height: 100vh;
-    z-index: 1001;
-}
-
-
-.l-overlay .ll {
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: -200%;
-    left: 0;
-    z-index: 1002;
-    opacity: 0;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
-  
-.l-overlay.active .ll {
-    top: 0;
-    opacity: 1;
+
+.loadingContainer {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-  
-.l-overlay .f {
-    left: -100%;
-}
-  
-.l-overlay .s {
-    right: -100%;
-}
-  
-.l-overlay.active .f {
-    left: 0;
-}
-  
-.l-overlay.active .s {
-    right: 0;
-}
-  
-/* Remove bouncing animation - use simple static dots */
-.dots > div {
-    width: 3rem;
-    height: 3rem;
-    background: #fff;
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
     border-radius: 50%;
-    display: inline-block;
-    /* Remove animation */
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
 }
 
-.dots .bounce {
-    /* Remove animation delay */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.dots .bounce2 {
-    /* Remove animation delay */
-}
-  
-
-/* Remove bounce keyframes */
-@keyframes bounce {
-    0%, 100% {
-        transform: scale(1);
-    }
+.loadingContainer p {
+    margin: 0;
+    color: #333;
+    font-size: 1rem;
 }

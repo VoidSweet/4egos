@@ -454,6 +454,28 @@ export default function EconomyPage({ user, guild }: IProps) {
                                     </Link>
                                 </div>
                             </div>
+
+                            <div className={styles.sidebarSection}>
+                                <h4>Bot Management</h4>
+                                <div className={styles.sidebarLinks}>
+                                    <a 
+                                        href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '1398326650558742528'}&permissions=8&scope=bot%20applications.commands&guild_id=${guild.id}`}
+                                        className={styles.sidebarLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <i className="fas fa-plus"></i>
+                                        <span>Invite Bot</span>
+                                    </a>
+                                    <Link 
+                                        href="/support"
+                                        className={styles.sidebarLink}
+                                    >
+                                        <i className="fas fa-life-ring"></i>
+                                        <span>Support</span>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </nav>
 

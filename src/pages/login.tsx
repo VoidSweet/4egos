@@ -54,12 +54,12 @@ export default function Login() {
                         <p>
                             Don&apos;t have AegisBot in your server?{' '}
                             <Link href="/invite">
-                                <a>Invite it now</a>
+                                Invite it now
                             </Link>
                         </p>
                         <p>
                             <Link href="/">
-                                <a>← Back to Home</a>
+                                ← Back to Home
                             </Link>
                         </p>
                     </div>

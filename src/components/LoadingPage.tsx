@@ -5,54 +5,15 @@ interface IProps {
     loading: boolean;
 }
 
-export default class LoadingPage extends React.Component {
-    constructor(props: IProps) {
-        super(props as IProps);
+export default function LoadingPage({ loading }: IProps) {
+    if (!loading) return null;
 
-        const { loading } = this.props as IProps;
-        this.state = {
-            loading: loading
-        }
-    }
-
-    componentDidMount() {
-        // Remove animation delays - make loading instant
-        const { loading } = this.props as IProps;
-        const el = document.querySelector(`.${styles["l-overlay"]}`) as HTMLElement;
-        if(loading) {
-            el.classList.add(styles["active"]);
-        } else {
-            el.classList.remove(styles["active"]);
-        }
-    }
- 
-    componentDidUpdate() {
-        // Remove animation delays - make hiding instant
-        const { loading } = this.props as IProps;
-        if(loading == false) {
-            const el = document.querySelector(`.${styles["l-overlay"]}`) as HTMLElement;
-            el.classList.remove(styles["active"]);
-            this.setState({ loading: false })
-        }
-    }
-
-    render() {
-        const { loading } = this.props as IProps;
-        return (
-            <>
-                <div className={styles[loading ? "ll-overlay active" : "ll-overlay"]}></div>
-                <div className={styles["l-overlay"]}>
-                    <div className={styles["ll"]}>
-                        <div className={styles["dots"]}>
-                        <div className={styles["bounce"]}/>
-                        <div className={styles["bounce2"]}/>
-                        <div className={styles["bounce3"]}/>
-                    </div>
-                    </div>
-                        <div className={styles["f"]}></div>
-                        <div className={styles["s"]}></div>
-                    </div>
-            </>
-        )
-    }
+    return (
+        <div className={styles.loadingOverlay}>
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+    );
 }
