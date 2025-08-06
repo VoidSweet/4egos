@@ -7,7 +7,7 @@ export default function HomePage() {
     return (
         <>
             <Head>
-                <title>AegisBot Dashboard - Discord Server Management</title>
+                <title>Aegis Dashboard - Discord Server Management</title>
                 <meta name="description" content="Professional Discord bot dashboard for complete server management" />
             </Head>
             
@@ -15,24 +15,23 @@ export default function HomePage() {
                 <div className={styles.container}>
                     <div className={styles.heroContent}>
                         <h1 className={styles.heroTitle}>
-                            🛡️ <span className={styles.brandText}>AegisBot</span> Dashboard
+                            🛡️ <span className={styles.brandText}>Aegis</span> Dashboard
                         </h1>
                         <p className={styles.heroSubtitle}>
-                            Professional Discord server management with advanced security, 
-                            economy system, moderation tools, and comprehensive analytics.
+                            Multi-purpose Discord Bot. Fully customizable. Completely free.
                         </p>
                         
                         <div className={styles.heroButtons}>
                             <Link href="/dashboard">
                                 <a className={styles.primaryBtn}>
                                     <i className="fas fa-tachometer-alt"></i>
-                                    Access Dashboard
+                                    Open dashboard
                                 </a>
                             </Link>
                             <Link href="/invite">
                                 <a className={styles.secondaryBtn}>
                                     <i className="fab fa-discord"></i>
-                                    Invite Bot
+                                    Add to Discord
                                 </a>
                             </Link>
                         </div>
