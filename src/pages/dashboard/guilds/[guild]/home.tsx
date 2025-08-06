@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from '../../../../styles/GuildDashboard.module.css';
+import ActivityConsole from '../../../../components/ActivityConsole';
 import { IUser } from '../../../../types';
 
 interface IGuild {
@@ -13,6 +14,30 @@ interface IGuild {
     icon: string | null;
     owner: boolean;
     permissions: string;
+    memberCount?: number;
+    botPresent?: boolean;
+    features?: string[];
+}
+
+interface BotStats {
+    commands: {
+        total: number;
+        daily: number;
+        weekly: number;
+    };
+    moderation: {
+        totalActions: number;
+        bans: number;
+        kicks: number;
+        warnings: number;
+        autoModActions: number;
+    };
+    activity: {
+        messagesProcessed: number;
+        activeUsers: number;
+        newMembers: number;
+        leftMembers: number;
+    };
 }
 
 interface IProps {
@@ -25,12 +50,34 @@ export default function GuildDashboard({ user, guild }: IProps) {
     const { guild: guildId } = router.query;
     
     const [activeModule, setActiveModule] = useState('home');
+    const [botStats, setBotStats] = useState<BotStats | null>(null);
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        if (guildId && typeof guildId === 'string') {
+            fetchBotStats(guildId);
+        }
+    }, [guildId]);
+
+    const fetchBotStats = async (guildId: string) => {
+        try {
+            const response = await fetch(`/api/bot/${guildId}/stats`);
+            if (response.ok) {
+                const stats = await response.json();
+                setBotStats(stats);
+            }
+        } catch (error) {
+            console.error('Error fetching bot stats:', error);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
 
     const getGuildIconUrl = () => {
         if (guild.icon) {
             return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
         }
-        return '/images/default_server_icon.png';
+        return '/images/default_server_icon.svg';
     };
 
     const getUserAvatarUrl = () => {
@@ -158,9 +205,38 @@ export default function GuildDashboard({ user, guild }: IProps) {
                     {/* Main Content */}
                     <div className={styles.main}>
                         <div className={styles.welcome}>
-                            <h1>Welcome <span className={styles.highlight}>{user.username}</span>,</h1>
-                            <p>find commonly used dashboard pages below.</p>
+                            <div className={styles.welcomeContent}>
+                                <h1>Welcome <span className={styles.highlight}>{user.username}</span>,</h1>
+                                <p>manage your server with Aegis dashboard.</p>
+                            </div>
+                            
+                            {/* Server Stats */}
+                            {botStats && (
+                                <div className={styles.serverStats}>
+                                    <div className={styles.stat}>
+                                        <div className={styles.statValue}>{guild.memberCount?.toLocaleString() || '0'}</div>
+                                        <div className={styles.statLabel}>Members</div>
+                                    </div>
+                                    <div className={styles.stat}>
+                                        <div className={styles.statValue}>{botStats.commands.total.toLocaleString()}</div>
+                                        <div className={styles.statLabel}>Commands</div>
+                                    </div>
+                                    <div className={styles.stat}>
+                                        <div className={styles.statValue}>{botStats.moderation.totalActions}</div>
+                                        <div className={styles.statLabel}>Mod Actions</div>
+                                    </div>
+                                    <div className={styles.stat}>
+                                        <div className={styles.statValue}>{botStats.activity.activeUsers}</div>
+                                        <div className={styles.statLabel}>Active Users</div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+
+                        {/* Activity Console */}
+                        {typeof guildId === 'string' && (
+                            <ActivityConsole guildId={guildId} />
+                        )}
 
                         {/* Dashboard Cards */}
                         <div className={styles.dashboardGrid}>
@@ -331,16 +407,47 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             public_flags: userData.public_flags
         };
 
+        // Enhance guild with bot data
+        let enhancedGuild = {
+            id: guild.id,
+            name: guild.name,
+            icon: guild.icon,
+            owner: guild.owner,
+            permissions: guild.permissions,
+            memberCount: 0,
+            botPresent: false,
+            features: []
+        };
+
+        try {
+            // Check if bot is in this guild and get data
+            const botApiUrl = process.env.DASHBOARD_API_URL;
+            const botApiKey = process.env.DASHBOARD_API_KEY;
+            
+            const botDataResponse = await fetch(`${botApiUrl}/guilds/${guild.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${botApiKey}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (botDataResponse.ok) {
+                const botData = await botDataResponse.json();
+                enhancedGuild = {
+                    ...enhancedGuild,
+                    memberCount: botData.memberCount || 0,
+                    botPresent: true,
+                    features: botData.features || []
+                };
+            }
+        } catch (error) {
+            console.error('Error fetching bot data:', error);
+        }
+
         return {
             props: {
                 user,
-                guild: {
-                    id: guild.id,
-                    name: guild.name,
-                    icon: guild.icon,
-                    owner: guild.owner,
-                    permissions: guild.permissions
-                }
+                guild: enhancedGuild
             }
         };
 

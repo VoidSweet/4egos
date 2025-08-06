@@ -249,6 +249,7 @@
 
 .serverIcon {
     flex-shrink: 0;
+    position: relative;
 }
 
 .serverImage {
@@ -257,6 +258,22 @@
     border-radius: 12px;
     object-fit: cover;
     background: rgba(255, 255, 255, 0.1);
+}
+
+.botBadge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #10b981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #0f172a;
+    font-size: 8px;
+    color: #ffffff;
 }
 
 .serverInfo {
@@ -277,13 +294,58 @@
 .serverRole {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);
-    margin: 0;
+    margin: 0 0 6px 0;
+}
+
+.serverStatus {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.75rem;
+}
+
+.statusOnline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #10b981;
+}
+
+.statusOnline i {
+    font-size: 6px;
+}
+
+.statusOffline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #f59e0b;
+}
+
+.statusOffline i {
+    font-size: 6px;
+}
+
+.memberCount {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .serverAction {
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.875rem;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.inviteAction {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #38bdf8;
+    font-weight: 500;
 }
 
 .serverCard:hover .serverAction {

@@ -15,6 +15,10 @@ interface IGuild {
     owner: boolean;
     permissions: string;
     permissions_new: string;
+    botPresent?: boolean;
+    memberCount?: number;
+    features?: string[];
+    joinedAt?: string;
 }
 
 interface IProps {
@@ -42,7 +46,7 @@ export default function ServerSelection({ user, guilds }: IProps) {
         if (guild.icon) {
             return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
         }
-        return '/images/default_server_icon.png';
+        return '/images/default_server_icon.svg';
     };
 
     const getUserAvatarUrl = () => {
@@ -134,15 +138,47 @@ export default function ServerSelection({ user, guilds }: IProps) {
                                             alt={guild.name}
                                             className={styles.serverImage}
                                         />
+                                        {guild.botPresent && (
+                                            <div className={styles.botBadge}>
+                                                <i className="fas fa-robot"></i>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className={styles.serverInfo}>
                                         <h3 className={styles.serverName}>{guild.name}</h3>
                                         <p className={styles.serverRole}>
                                             {guild.owner ? 'Owner' : 'Administrator'}
                                         </p>
+                                        {guild.botPresent ? (
+                                            <div className={styles.serverStatus}>
+                                                <span className={styles.statusOnline}>
+                                                    <i className="fas fa-circle"></i>
+                                                    Bot Active
+                                                </span>
+                                                {guild.memberCount && (
+                                                    <span className={styles.memberCount}>
+                                                        {guild.memberCount.toLocaleString()} members
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className={styles.serverStatus}>
+                                                <span className={styles.statusOffline}>
+                                                    <i className="fas fa-circle"></i>
+                                                    Bot Not Added
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className={styles.serverAction}>
-                                        <i className="fas fa-arrow-right"></i>
+                                        {guild.botPresent ? (
+                                            <i className="fas fa-arrow-right"></i>
+                                        ) : (
+                                            <span className={styles.inviteAction}>
+                                                <i className="fas fa-plus"></i>
+                                                Invite
+                                            </span>
+                                        )}
                                     </div>
                                 </Link>
                             ))}
@@ -205,7 +241,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
         const userData = await userResponse.json();
 
-        // Fetch user guilds
+        // Fetch guilds with bot data from our API
+        const botApiUrl = process.env.DASHBOARD_API_URL;
+        const botApiKey = process.env.DASHBOARD_API_KEY;
+        
+        // Get Discord guilds first
         const guildsResponse = await fetch('https://discord.com/api/v10/users/@me/guilds', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -216,7 +256,50 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             throw new Error('Failed to fetch guilds data');
         }
 
-        const guildsData = await guildsResponse.json();
+        const discordGuilds = await guildsResponse.json();
+
+        // Enhance guilds with bot data
+        const guildsWithBotData = await Promise.all(
+            discordGuilds.map(async (guild: IGuild) => {
+                try {
+                    // Check if bot is in this guild
+                    const botDataResponse = await fetch(`${botApiUrl}/guilds/${guild.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${botApiKey}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (botDataResponse.ok) {
+                        const botData = await botDataResponse.json();
+                        return {
+                            ...guild,
+                            botPresent: true,
+                            memberCount: botData.memberCount || 0,
+                            features: botData.features || [],
+                            joinedAt: botData.joinedAt || new Date().toISOString()
+                        };
+                    } else {
+                        return {
+                            ...guild,
+                            botPresent: false,
+                            memberCount: 0,
+                            features: [],
+                            joinedAt: ''
+                        };
+                    }
+                } catch (error) {
+                    console.error(`Error fetching bot data for guild ${guild.id}:`, error);
+                    return {
+                        ...guild,
+                        botPresent: false,
+                        memberCount: 0,
+                        features: [],
+                        joinedAt: ''
+                    };
+                }
+            })
+        );
 
         const user: IUser = {
             id: userData.id,
@@ -233,7 +316,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         return {
             props: {
                 user,
-                guilds: guildsData
+                guilds: guildsWithBotData
             }
         };
 

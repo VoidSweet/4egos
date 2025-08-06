@@ -241,6 +241,14 @@
 
 .welcome {
     margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.welcomeContent {
+    flex: 1;
 }
 
 .welcome h1 {
@@ -258,6 +266,35 @@
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
+}
+
+.serverStats {
+    display: flex;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.stat {
+    text-align: center;
+    min-width: 60px;
+}
+
+.statValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 4px;
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Dashboard Grid */
