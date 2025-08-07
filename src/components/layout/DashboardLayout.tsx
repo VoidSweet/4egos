@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -8,9 +8,42 @@ interface DashboardLayoutProps {
   guildId?: string;
 }
 
+interface User {
+  id: string;
+  username: string;
+  discriminator: string;
+  avatar: string | null;
+}
+
 export default function DashboardLayout({ children, guildId }: DashboardLayoutProps) {
   const router = useRouter();
   const currentPath = router.pathname;
+  const [user, setUser] = useState<User | null>(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  useEffect(() => {
+    // Fetch user data
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/auth/status');
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData.user);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const getUserAvatarUrl = () => {
+    if (user?.avatar) {
+      return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`;
+    }
+    return 'https://cdn.discordapp.com/embed/avatars/0.png';
+  };
 
   const menuItems = [
     {
@@ -124,6 +157,52 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
             </h2>
             <p className="dark-sidebar-subtitle">Dashboard</p>
           </div>
+
+          {/* Mini Profile in Sidebar */}
+          {user && (
+            <div className="dark-sidebar-profile">
+              <div 
+                className="dark-sidebar-profile-content"
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
+              >
+                <Image 
+                  src={getUserAvatarUrl()} 
+                  alt="User Avatar"
+                  width={40}
+                  height={40}
+                  className="dark-sidebar-profile-avatar"
+                />
+                <div className="dark-sidebar-profile-info">
+                  <span className="dark-sidebar-profile-name">
+                    {user.username}
+                    {user.discriminator !== '0' && `#${user.discriminator}`}
+                  </span>
+                  <span className="dark-sidebar-profile-status">Online</span>
+                </div>
+                <div className="dark-sidebar-profile-dropdown-icon">
+                  {showUserDropdown ? '▲' : '▼'}
+                </div>
+              </div>
+              
+              {showUserDropdown && (
+                <div className="dark-sidebar-profile-dropdown">
+                  <Link href="/dashboard/@me" className="dark-sidebar-profile-dropdown-item">
+                    👤 Profile
+                  </Link>
+                  <Link href="/dashboard/billing" className="dark-sidebar-profile-dropdown-item">
+                    💳 Billing
+                  </Link>
+                  <Link href="/invite" className="dark-sidebar-profile-dropdown-item">
+                    ➕ Invite Bot
+                  </Link>
+                  <div className="dark-sidebar-profile-dropdown-divider"></div>
+                  <Link href="/api/auth/logout" className="dark-sidebar-profile-dropdown-item logout">
+                    🚪 Logout
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
           
           <nav className="dark-sidebar-nav">
             {menuItems.map((section, index) => (
@@ -142,31 +221,6 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
 
         {/* Main Content */}
         <div className="dark-main-content">
-          {/* Top Bar with Mini Profile */}
-          <div className="dark-topbar">
-            <div className="dark-topbar-left">
-              {/* Breadcrumb or page title can go here */}
-            </div>
-            <div className="dark-topbar-right">
-              <div className="dark-mini-profile">
-                <Image 
-                  src="https://cdn.discordapp.com/embed/avatars/0.png" 
-                  alt="User Avatar"
-                  width={32}
-                  height={32}
-                  className="dark-mini-profile-avatar"
-                />
-                <div className="dark-mini-profile-info">
-                  <span className="dark-mini-profile-name">User#1234</span>
-                  <span className="dark-mini-profile-status">Online</span>
-                </div>
-                <div className="dark-mini-profile-dropdown">
-                  <button className="dark-mini-profile-dropdown-btn">⚙️</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
           {children}
         </div>
       </div>

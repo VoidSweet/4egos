@@ -24,6 +24,8 @@ export default function Diagnostics({ user }: DiagnosticsProps) {
   }, []);
 
   const runDiagnostics = async () => {
+    setSuggestions([]); // Clear previous suggestions
+
     // Test Bot Status
     try {
       const botResponse = await fetch('/api/bot/status');
@@ -49,7 +51,9 @@ export default function Diagnostics({ user }: DiagnosticsProps) {
         setSuggestions(prev => [...prev, 
           'Check DISCORD_TOKEN in .env.local',
           'Verify bot token is valid in Discord Developer Portal',
-          'Ensure bot has proper permissions'
+          'Ensure bot has proper permissions',
+          'Set DISCORD_CLIENT_ID in environment variables',
+          'Set DISCORD_CLIENT_SECRET in environment variables'
         ]);
       }
     } catch (error) {
@@ -60,57 +64,35 @@ export default function Diagnostics({ user }: DiagnosticsProps) {
       }));
     }
 
-    // Test OAuth Configuration
+    // Test OAuth Configuration and User Authentication
     try {
-      const config = {
-        hasClientId: !!process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID,
-        hasClientSecret: !!process.env.DISCORD_CLIENT_SECRET,
-        hasRedirectUri: !!process.env.DISCORD_REDIRECT_URI,
-      };
-
-      const oauthValid = config.hasClientId && config.hasClientSecret && config.hasRedirectUri;
+      const authResponse = await fetch('/api/auth/status');
+      const authData = await authResponse.json();
       
       setTests(prev => ({
         ...prev,
         oauthConfig: {
-          status: oauthValid ? 'success' : 'error',
-          message: oauthValid 
+          status: authData.configured ? 'success' : 'warning',
+          message: authData.configured 
             ? '✅ OAuth configuration complete'
-            : '❌ Missing OAuth configuration'
+            : '⚠️ OAuth partially configured'
+        },
+        userAuth: {
+          status: authData.authenticated ? 'success' : 'error',
+          message: authData.authenticated 
+            ? `✅ User authenticated: ${authData.user?.username}`
+            : '❌ User not authenticated'
         }
       }));
 
-      if (!oauthValid) {
+      if (!authData.configured) {
         setSuggestions(prev => [...prev,
-          'Set DISCORD_CLIENT_ID in environment variables',
-          'Set DISCORD_CLIENT_SECRET in environment variables',
-          'Set DISCORD_REDIRECT_URI in environment variables',
-          'Update OAuth2 redirect URLs in Discord Developer Portal'
+          'Update OAuth2 redirect URLs in Discord Developer Portal',
+          'Verify environment variables are set correctly'
         ]);
       }
-    } catch (error) {
-      setTests(prev => ({
-        ...prev,
-        oauthConfig: { status: 'error', message: '❌ Failed to check OAuth config' }
-      }));
-    }
 
-    // Test User Authentication
-    try {
-      const userResponse = await fetch('/api/auth/status');
-      const userData = await userResponse.json();
-      
-      setTests(prev => ({
-        ...prev,
-        userAuth: {
-          status: userData.authenticated ? 'success' : 'warning',
-          message: userData.authenticated 
-            ? `✅ User authenticated: ${userData.user?.username}#${userData.user?.discriminator}`
-            : '⚠️ User not authenticated'
-        }
-      }));
-
-      if (!userData.authenticated) {
+      if (!authData.authenticated) {
         setSuggestions(prev => [...prev,
           'Login with Discord to test authentication flow',
           'Check browser cookies are enabled',
@@ -120,11 +102,12 @@ export default function Diagnostics({ user }: DiagnosticsProps) {
     } catch (error) {
       setTests(prev => ({
         ...prev,
+        oauthConfig: { status: 'error', message: '❌ Failed to check OAuth config' },
         userAuth: { status: 'error', message: '❌ Failed to check user authentication' }
       }));
     }
 
-    // Test Database (simplified check)
+    // Test Database Connection (placeholder)
     setTests(prev => ({
       ...prev,
       database: {
@@ -241,7 +224,7 @@ export default function Diagnostics({ user }: DiagnosticsProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
-      user: null,
+      user: null, // Will be fetched client-side
     },
   };
 };

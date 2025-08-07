@@ -10,9 +10,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get session token from cookies
     const { '__SessionLuny': sessionToken } = parseCookies({ req });
     
+    // Check if OAuth is configured
+    const configured = !!(
+      process.env.DISCORD_CLIENT_ID && 
+      process.env.DISCORD_CLIENT_SECRET && 
+      process.env.DISCORD_REDIRECT_URI
+    );
+    
     if (!sessionToken) {
-      return res.status(401).json({ 
+      return res.status(200).json({ 
         authenticated: false,
+        configured,
+        user: null,
         error: 'No session token found' 
       });
     }
@@ -26,8 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (!userResponse.ok) {
-      return res.status(401).json({ 
+      return res.status(200).json({ 
         authenticated: false,
+        configured,
+        user: null,
         error: 'Invalid or expired session token' 
       });
     }
@@ -46,7 +57,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (guildsResponse.ok) {
       userGuilds = await guildsResponse.json();
     }
-
     // Filter guilds where user has MANAGE_GUILD permission (0x00000020)
     const manageableGuilds = userGuilds.filter(guild => 
       (parseInt(guild.permissions) & 0x00000020) === 0x00000020
@@ -54,6 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({
       authenticated: true,
+      configured,
       user: {
         id: userData.id,
         username: userData.username,

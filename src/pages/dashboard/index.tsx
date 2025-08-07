@@ -26,10 +26,32 @@ interface IProps {
     guilds: IGuild[];
 }
 
-export default function ServerSelection({ user, guilds }: IProps) {
+export default function ServerSelection({ user, guilds: initialGuilds }: IProps) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const [guilds, setGuilds] = useState<IGuild[]>(initialGuilds || []);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Fetch updated guild data with bot presence
+        const fetchGuildsWithBotStatus = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/guilds');
+                if (response.ok) {
+                    const data = await response.json();
+                    setGuilds(data.guilds);
+                }
+            } catch (error) {
+                console.error('Failed to fetch guild data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGuildsWithBotStatus();
+    }, []);
 
     // Filter guilds where user has admin permissions or is owner
     const adminGuilds = guilds.filter(guild => 
@@ -126,30 +148,35 @@ export default function ServerSelection({ user, guilds }: IProps) {
                         </div>
 
                         <div className={styles.servers}>
-                            {filteredGuilds.map(guild => (
-                                <Link 
-                                    key={guild.id} 
-                                    href={`/dashboard/guilds/${guild.id}`}
-                                    className={styles.serverCard}
-                                >
-                                    <div className={styles.serverIcon}>
-                                        <img
-                                            src={getIconUrl(guild)}
-                                            alt={guild.name}
-                                            className={styles.serverImage}
-                                        />
-                                        {guild.botPresent && (
+                            {loading && (
+                                <div className={styles.loadingState}>
+                                    <i className="fas fa-spinner fa-spin"></i>
+                                    <p>Loading server data...</p>
+                                </div>
+                            )}
+                            
+                            {!loading && filteredGuilds.map(guild => (
+                                guild.botPresent ? (
+                                    <Link 
+                                        key={guild.id} 
+                                        href={`/dashboard/guilds/${guild.id}`}
+                                        className={styles.serverCard}
+                                    >
+                                        <div className={styles.serverIcon}>
+                                            <img
+                                                src={getIconUrl(guild)}
+                                                alt={guild.name}
+                                                className={styles.serverImage}
+                                            />
                                             <div className={styles.botBadge}>
                                                 <i className="fas fa-robot"></i>
                                             </div>
-                                        )}
-                                    </div>
-                                    <div className={styles.serverInfo}>
-                                        <h3 className={styles.serverName}>{guild.name}</h3>
-                                        <p className={styles.serverRole}>
-                                            {guild.owner ? 'Owner' : 'Administrator'}
-                                        </p>
-                                        {guild.botPresent ? (
+                                        </div>
+                                        <div className={styles.serverInfo}>
+                                            <h3 className={styles.serverName}>{guild.name}</h3>
+                                            <p className={styles.serverRole}>
+                                                {guild.owner ? 'Owner' : 'Administrator'}
+                                            </p>
                                             <div className={styles.serverStatus}>
                                                 <span className={styles.statusOnline}>
                                                     <i className="fas fa-circle"></i>
@@ -161,26 +188,37 @@ export default function ServerSelection({ user, guilds }: IProps) {
                                                     </span>
                                                 )}
                                             </div>
-                                        ) : (
+                                        </div>
+                                        <div className={styles.serverAction}>
+                                            <i className="fas fa-arrow-right"></i>
+                                        </div>
+                                    </Link>
+                                ) : (
+                                    <div key={guild.id} className={styles.serverCardDisabled}>
+                                        <div className={styles.serverIcon}>
+                                            <img
+                                                src={getIconUrl(guild)}
+                                                alt={guild.name}
+                                                className={styles.serverImage}
+                                            />
+                                        </div>
+                                        <div className={styles.serverInfo}>
+                                            <h3 className={styles.serverName}>{guild.name}</h3>
+                                            <p className={styles.serverRole}>
+                                                {guild.owner ? 'Owner' : 'Administrator'}
+                                            </p>
                                             <div className={styles.serverStatus}>
                                                 <span className={styles.statusOffline}>
                                                     <i className="fas fa-circle"></i>
                                                     Bot Not Added
                                                 </span>
                                             </div>
-                                        )}
+                                        </div>
+                                        <div className={styles.serverAction}>
+                                            <span className={styles.disabledText}>Invite Bot First</span>
+                                        </div>
                                     </div>
-                                    <div className={styles.serverAction}>
-                                        {guild.botPresent ? (
-                                            <i className="fas fa-arrow-right"></i>
-                                        ) : (
-                                            <span className={styles.inviteAction}>
-                                                <i className="fas fa-plus"></i>
-                                                Invite
-                                            </span>
-                                        )}
-                                    </div>
-                                </Link>
+                                )
                             ))}
 
                             {filteredGuilds.length === 0 && (
