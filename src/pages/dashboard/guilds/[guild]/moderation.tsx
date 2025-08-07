@@ -12,9 +12,39 @@ export default function Moderation({ guildId }: ModerationProps) {
   const [punishmentChannel, setPunishmentChannel] = useState('');
   const [mandatoryReason, setMandatoryReason] = useState(false);
   const [autoModeration, setAutoModeration] = useState(false);
+  const [logBansNotByBot, setLogBansNotByBot] = useState(false);
+  const [logKicksNotByBot, setLogKicksNotByBot] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`/api/guilds/${guildId}/moderation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          moderationChannel,
+          punishmentChannel,
+          mandatoryReason,
+          autoModeration,
+          logBansNotByBot,
+          logKicksNotByBot,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Settings saved successfully!');
+      } else {
+        alert('Failed to save settings');
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('Failed to save settings');
+    }
+  };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout guildId={guildId}>
       <div className={styles.pageContainer}>
         <h1 className={styles.pageTitle}>Moderation Settings</h1>
         
@@ -56,6 +86,7 @@ export default function Moderation({ guildId }: ModerationProps) {
 
         <div className={styles.section}>
           <h2>Moderation Options</h2>
+          
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -66,11 +97,9 @@ export default function Moderation({ guildId }: ModerationProps) {
           </label>
           <p className={styles.description}>
             Make it mandatory to provide a reason when applying punishments.
-            This only applies to users without the "Punish without reason" permission.
+            This only applies to users without the &quot;Punish without reason&quot; permission.
           </p>
-        </div>
 
-        <div className={styles.section}>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -82,9 +111,34 @@ export default function Moderation({ guildId }: ModerationProps) {
           <p className={styles.description}>
             Automatically moderate messages based on configured rules.
           </p>
+
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={logBansNotByBot}
+              onChange={(e) => setLogBansNotByBot(e.target.checked)}
+            />
+            <strong>Log bans not made by the bot</strong>
+          </label>
+          <p className={styles.description}>
+            Record in the modlogs and punishment channels when a ban is applied that wasn&apos;t done by the bot.
+            <br />To show the reason and author, you need to give the bot &quot;View Audit Log&quot; permission.
+          </p>
+
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={logKicksNotByBot}
+              onChange={(e) => setLogKicksNotByBot(e.target.checked)}
+            />
+            <strong>Log kicks not made by the bot</strong>
+          </label>
+          <p className={styles.description}>
+            Record in the modlogs and punishment channels when a kick is applied that wasn&apos;t done by the bot.
+          </p>
         </div>
 
-        <button className={styles.saveButton}>
+        <button className={styles.saveButton} onClick={handleSave}>
           Save Settings
         </button>
       </div>
@@ -101,121 +155,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-                            /><label style={{marginLeft: '1%', fontSize: '18px'}}><strong>Eventos de banimento não feitos através da Lunar</strong></label></p>
-                            <p>Registrar no canal de modlogs e punições quando um banimento for aplicado e não tenha sido feito pela Lunar.<br />Para mostrar o motivo e o autor, você precisa dar ao bot permissão de <code>Ver registro de autoria</code>.</p>
-                        </CheckRadio>
-                    </div>
-                </div>
-
-                <Script
-                    src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'
-                    onLoad={() => {
-                        const buttonSave = $('#save-button');
-                        const sendingClass = styles['sending'];
-
-                        const api = socket(hostApi, {
-                            query: {
-                                token,
-                                guildId,
-                            },
-                        });
-
-                        api.on('ready', ({ data }) => {
-                            console.log(data)
-                            this.setState({
-                                user: data.user,
-                                guild: data.guild,
-                                loading: false,
-                            });
-                        });
-
-                        api.on('error', ({ data }) => {
-                            console.log(data);
-
-                            if(!data?.message || `${data.message}`.toLowerCase().includes('token')) {
-                                return window.location.href = '/api/auth/login?dt=true';
-                            };
-
-                            if(`${data.message}`.toLowerCase() == 'invalid guild') {
-                                return window.location.href = `/invite?guildId=${guildId}`;
-                            };
-
-                            if(`${data.message}`.toLowerCase() == 'missing access') {
-                                return window.location.href = `/dashboard/guilds?err=${encodeURIComponent(data.message)}&guildId=${guildId}`;
-                            };
-                        });
-
-                        api.on('updateGuildSettings', ({ data }) => {
-                            this.setState({
-                                guild: Object.assign((this.state as IState).guild as IGuildSuper, data),
-                            });
-
-                            setTimeout(() => {
-                                buttonSave.removeClass(sendingClass);
-                            }, 1000);
-                        })
-
-                        buttonSave.click(async function() {
-                            if(!buttonSave.hasClass(sendingClass)) {
-                                buttonSave.addClass(sendingClass);
-                                
-                                const json = saveJSON();
-
-                                console.log(json)
-
-                                api.emit('updateGuildSettings', {
-                                    data: {
-                                        updateType: 'moderation',
-                                        settingsData: { ...json } 
-                                    }
-                                });
-                            };
-                        });
-
-                        function saveJSON() {
-                            const json = { configs: 0 }
-
-                            $('[data-send-on-save]').map(function() {
-                                const a = $(this);
-                                const id = a.attr('id');
-                                const type = a.attr('data-type');
-                                const value = a.attr('data-value');
-                                
-                                if(type == 'select') {
-                                    json[`${id}`.replace('w-select-', '')] = value == "none" ?  null : value;
-                                };
-                                
-                                if(type == 'bitfield') {
-                                    if(a.is(':checked')) {
-                                        json.configs |= parseInt(value);
-                                    }
-                                };
-                            });
-
-                            return json;
-                        } 
-                    }}
-                ></Script>
-            </>
-        );
-    }
-}
-
-export const getServerSideProps: GetServerSideProps = async(ctx) => {
-    const { ['__SessionLuny']: token } = parseCookies(ctx); 
-
-    if(!token) return { 
-        redirect: {
-            destination: `/api/auth/login?state=${encodeURIComponent(ctx.resolvedUrl || '/dashboard/guilds/[guild]')}`,
-            permanent: false,
-        } 
-    };
-
-    return {
-        props: {
-            token,
-            hostApi: process.env.HOST_API,
-            guildId: ctx.query.guild || null,
-        },
-    };
-}
