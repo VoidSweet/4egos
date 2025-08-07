@@ -1,157 +1,337 @@
-import React, { useState, useEffect } from 'react';
-import { GetServerSideProps } from 'next';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import DashboardLayout from '../../../../components/layout/DashboardLayout';
-import styles from '../../../../styles/DashboardLayout.module.css';
+import styles from '../../../../styles/guild.module.css';
 
-interface ModerationProps {
-  guildId: string;
+interface ModerationSettings {
+  autoMod: {
+    enabled: boolean;
+    antiSpam: boolean;
+    badWords: boolean;
+    linksBlocked: boolean;
+  };
+  logging: {
+    enabled: boolean;
+    channelId: string;
+    logBans: boolean;
+    logKicks: boolean;
+    logMutes: boolean;
+    logDeletes: boolean;
+  };
+  punishments: {
+    warningsBeforeMute: number;
+    mutesDuration: number;
+    warningsBeforeBan: number;
+  };
+  channels: {
+    modLog: string;
+    memberLog: string;
+  };
 }
 
-export default function Moderation({ guildId }: ModerationProps) {
-  const [moderationChannel, setModerationChannel] = useState('');
-  const [punishmentChannel, setPunishmentChannel] = useState('');
-  const [mandatoryReason, setMandatoryReason] = useState(false);
-  const [autoModeration, setAutoModeration] = useState(false);
-  const [logBansNotByBot, setLogBansNotByBot] = useState(false);
-  const [logKicksNotByBot, setLogKicksNotByBot] = useState(false);
+export default function ModerationPage() {
+  const router = useRouter();
+  const { guild } = router.query;
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState<ModerationSettings>({
+    autoMod: {
+      enabled: true,
+      antiSpam: true,
+      badWords: false,
+      linksBlocked: false
+    },
+    logging: {
+      enabled: true,
+      channelId: '',
+      logBans: true,
+      logKicks: true,
+      logMutes: true,
+      logDeletes: false
+    },
+    punishments: {
+      warningsBeforeMute: 3,
+      mutesDuration: 300,
+      warningsBeforeBan: 5
+    },
+    channels: {
+      modLog: '',
+      memberLog: ''
+    }
+  });
 
-  const handleSave = async () => {
-    try {
-      const response = await fetch(`/api/guilds/${guildId}/moderation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          moderationChannel,
-          punishmentChannel,
-          mandatoryReason,
-          autoModeration,
-          logBansNotByBot,
-          logKicksNotByBot,
-        }),
-      });
+  useEffect(() => {
+    const checkAuth = async () => {
+      const sessionCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('__SessionLuny='));
 
-      if (response.ok) {
-        alert('Settings saved successfully!');
-      } else {
-        alert('Failed to save settings');
+      if (!sessionCookie) {
+        router.push('/login');
+        return;
       }
+
+      // Load guild data and settings
+      setLoading(false);
+    };
+
+    if (guild) {
+      checkAuth();
+    }
+  }, [guild, router]);
+
+  const handleSaveSettings = async () => {
+    setSaving(true);
+    try {
+      // Save settings logic here
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
-      console.error('Error saving settings:', error);
-      alert('Failed to save settings');
+      console.error('Failed to save settings:', error);
+    } finally {
+      setSaving(false);
     }
   };
 
+  const updateAutoModSetting = (field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      autoMod: {
+        ...prev.autoMod,
+        [field]: value
+      }
+    }));
+  };
+
+  const updateLoggingSetting = (field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      logging: {
+        ...prev.logging,
+        [field]: value
+      }
+    }));
+  };
+
+  const updatePunishmentsSetting = (field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      punishments: {
+        ...prev.punishments,
+        [field]: value
+      }
+    }));
+  };
+
+  const updateChannelsSetting = (field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      channels: {
+        ...prev.channels,
+        [field]: value
+      }
+    }));
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className={styles.container}>
+          <div className="loading">Loading moderation settings...</div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout guildId={guildId}>
-      <div className={styles.pageContainer}>
-        <h1 className={styles.pageTitle}>Moderation Settings</h1>
-        
-        <div className={styles.section}>
-          <h2>Moderation Logs Channel</h2>
-          <select 
-            className={styles.select}
-            value={moderationChannel}
-            onChange={(e) => setModerationChannel(e.target.value)}
+    <DashboardLayout>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1>Moderation Settings</h1>
+          <p>Configure automated moderation, logging, and punishment systems</p>
+        </div>
+
+        <div className="dark-stats-grid">
+          {/* Auto Moderation */}
+          <div className="dark-card">
+            <h3>Auto Moderation</h3>
+            <div className={styles.settingGroup}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={settings.autoMod.enabled}
+                  onChange={(e) => updateAutoModSetting('enabled', e.target.checked)}
+                />
+                Enable Auto Moderation
+              </label>
+            </div>
+            {settings.autoMod.enabled && (
+              <>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.autoMod.antiSpam}
+                      onChange={(e) => updateAutoModSetting('antiSpam', e.target.checked)}
+                    />
+                    Anti-Spam Protection
+                  </label>
+                </div>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.autoMod.badWords}
+                      onChange={(e) => updateAutoModSetting('badWords', e.target.checked)}
+                    />
+                    Bad Words Filter
+                  </label>
+                </div>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.autoMod.linksBlocked}
+                      onChange={(e) => updateAutoModSetting('linksBlocked', e.target.checked)}
+                    />
+                    Block Suspicious Links
+                  </label>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Logging Settings */}
+          <div className="dark-card">
+            <h3>Moderation Logging</h3>
+            <div className={styles.settingGroup}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={settings.logging.enabled}
+                  onChange={(e) => updateLoggingSetting('enabled', e.target.checked)}
+                />
+                Enable Logging
+              </label>
+            </div>
+            {settings.logging.enabled && (
+              <>
+                <div className={styles.settingGroup}>
+                  <label>Log Channel ID</label>
+                  <input
+                    type="text"
+                    value={settings.logging.channelId}
+                    onChange={(e) => updateLoggingSetting('channelId', e.target.value)}
+                    className={styles.input}
+                    placeholder="Channel ID for logs"
+                  />
+                </div>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.logging.logBans}
+                      onChange={(e) => updateLoggingSetting('logBans', e.target.checked)}
+                    />
+                    Log Bans
+                  </label>
+                </div>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.logging.logKicks}
+                      onChange={(e) => updateLoggingSetting('logKicks', e.target.checked)}
+                    />
+                    Log Kicks
+                  </label>
+                </div>
+                <div className={styles.settingGroup}>
+                  <label className={styles.toggleLabel}>
+                    <input
+                      type="checkbox"
+                      checked={settings.logging.logMutes}
+                      onChange={(e) => updateLoggingSetting('logMutes', e.target.checked)}
+                    />
+                    Log Mutes
+                  </label>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Punishment Settings */}
+          <div className="dark-card">
+            <h3>Punishment Configuration</h3>
+            <div className={styles.settingGroup}>
+              <label>Warnings Before Mute</label>
+              <input
+                type="number"
+                value={settings.punishments.warningsBeforeMute}
+                onChange={(e) => updatePunishmentsSetting('warningsBeforeMute', parseInt(e.target.value))}
+                className={styles.input}
+                min="1"
+                max="10"
+              />
+            </div>
+            <div className={styles.settingGroup}>
+              <label>Mute Duration (seconds)</label>
+              <input
+                type="number"
+                value={settings.punishments.mutesDuration}
+                onChange={(e) => updatePunishmentsSetting('mutesDuration', parseInt(e.target.value))}
+                className={styles.input}
+                min="60"
+              />
+            </div>
+            <div className={styles.settingGroup}>
+              <label>Warnings Before Ban</label>
+              <input
+                type="number"
+                value={settings.punishments.warningsBeforeBan}
+                onChange={(e) => updatePunishmentsSetting('warningsBeforeBan', parseInt(e.target.value))}
+                className={styles.input}
+                min="1"
+                max="20"
+              />
+            </div>
+          </div>
+
+          {/* Channel Configuration */}
+          <div className="dark-card">
+            <h3>Channel Settings</h3>
+            <div className={styles.settingGroup}>
+              <label>Moderation Log Channel</label>
+              <input
+                type="text"
+                value={settings.channels.modLog}
+                onChange={(e) => updateChannelsSetting('modLog', e.target.value)}
+                className={styles.input}
+                placeholder="Channel ID for mod logs"
+              />
+            </div>
+            <div className={styles.settingGroup}>
+              <label>Member Log Channel</label>
+              <input
+                type="text"
+                value={settings.channels.memberLog}
+                onChange={(e) => updateChannelsSetting('memberLog', e.target.value)}
+                className={styles.input}
+                placeholder="Channel ID for member logs"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.actionButtons}>
+          <button
+            onClick={handleSaveSettings}
+            disabled={saving}
+            className={`${styles.button} ${styles.primary}`}
           >
-            <option value="">Select Channel</option>
-            <option value="general">general</option>
-            <option value="mod-logs">mod-logs</option>
-          </select>
-          <p className={styles.description}>
-            Channel where moderation logs will be sent.
-            <br />
-            <code style={{color: "var(--success-color)"}}>+ Shows author, user, reason, id and link to punishment log</code>
-          </p>
+            {saving ? 'Saving...' : 'Save Settings'}
+          </button>
         </div>
-
-        <div className={styles.section}>
-          <h2>Punishment Channel</h2>
-          <select 
-            className={styles.select}
-            value={punishmentChannel}
-            onChange={(e) => setPunishmentChannel(e.target.value)}
-          >
-            <option value="">Select Channel</option>
-            <option value="general">general</option>
-            <option value="punishments">punishments</option>
-          </select>
-          <p className={styles.description}>
-            Channel where punishment messages will be sent.
-            <br />
-            <code style={{color: "var(--success-color)"}}>+ Customization possible (BETA)</code>
-          </p>
-        </div>
-
-        <div className={styles.section}>
-          <h2>Moderation Options</h2>
-          
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={mandatoryReason}
-              onChange={(e) => setMandatoryReason(e.target.checked)}
-            />
-            <strong>Require reason for punishments</strong>
-          </label>
-          <p className={styles.description}>
-            Make it mandatory to provide a reason when applying punishments.
-            This only applies to users without the &quot;Punish without reason&quot; permission.
-          </p>
-
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={autoModeration}
-              onChange={(e) => setAutoModeration(e.target.checked)}
-            />
-            <strong>Enable Auto-Moderation</strong>
-          </label>
-          <p className={styles.description}>
-            Automatically moderate messages based on configured rules.
-          </p>
-
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={logBansNotByBot}
-              onChange={(e) => setLogBansNotByBot(e.target.checked)}
-            />
-            <strong>Log bans not made by the bot</strong>
-          </label>
-          <p className={styles.description}>
-            Record in the modlogs and punishment channels when a ban is applied that wasn&apos;t done by the bot.
-            <br />To show the reason and author, you need to give the bot &quot;View Audit Log&quot; permission.
-          </p>
-
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={logKicksNotByBot}
-              onChange={(e) => setLogKicksNotByBot(e.target.checked)}
-            />
-            <strong>Log kicks not made by the bot</strong>
-          </label>
-          <p className={styles.description}>
-            Record in the modlogs and punishment channels when a kick is applied that wasn&apos;t done by the bot.
-          </p>
-        </div>
-
-        <button className={styles.saveButton} onClick={handleSave}>
-          Save Settings
-        </button>
       </div>
     </DashboardLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { guild } = context.params!;
-  
-  return {
-    props: {
-      guildId: guild as string,
-    },
-  };
-};

@@ -333,10 +333,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     // Check if bot is in this guild via bot API
                     const botToken = process.env.DISCORD_TOKEN;
                     if (!botToken) {
-                        return { ...guild, botPresent: false, memberCount: 0 };
+                        console.warn('Discord bot token not configured, assuming bot is present for all guilds');
+                        // If no bot token, assume bot is present (for development)
+                        return { 
+                            ...guild, 
+                            botPresent: true, 
+                            memberCount: guild.approximate_member_count || 100,
+                            features: [],
+                            joinedAt: ''
+                        };
                     }
 
-                    const botGuildsResponse = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+                    // Try to get guild info directly with bot token first
+                    const guildInfoResponse = await fetch(`https://discord.com/api/v10/guilds/${guild.id}`, {
                         headers: {
                             'Authorization': `Bot ${botToken}`,
                             'Content-Type': 'application/json',
@@ -344,28 +353,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     });
 
                     let botPresent = false;
-                    let memberCount = 0;
+                    let memberCount = guild.approximate_member_count || 0;
 
-                    if (botGuildsResponse.ok) {
-                        const botGuilds = await botGuildsResponse.json();
-                        const botGuild = botGuilds.find(bg => bg.id === guild.id);
-                        if (botGuild) {
-                            botPresent = true;
-                            // Try to get member count from guild info
-                            try {
-                                const guildInfoResponse = await fetch(`https://discord.com/api/v10/guilds/${guild.id}`, {
-                                    headers: {
-                                        'Authorization': `Bot ${botToken}`,
-                                        'Content-Type': 'application/json',
-                                    },
-                                });
-                                if (guildInfoResponse.ok) {
-                                    const guildInfo = await guildInfoResponse.json();
-                                    memberCount = guildInfo.approximate_member_count || guildInfo.member_count || 0;
-                                }
-                            } catch (error) {
-                                console.error(`Error fetching guild info for ${guild.id}:`, error);
+                    if (guildInfoResponse.ok) {
+                        // If we can fetch guild info with bot token, bot is definitely present
+                        const guildInfo = await guildInfoResponse.json();
+                        botPresent = true;
+                        memberCount = guildInfo.approximate_member_count || guildInfo.member_count || memberCount;
+                    } else {
+                        // If guild info fails, try checking bot's guild list
+                        try {
+                            const botGuildsResponse = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+                                headers: {
+                                    'Authorization': `Bot ${botToken}`,
+                                    'Content-Type': 'application/json',
+                                },
+                            });
+
+                            if (botGuildsResponse.ok) {
+                                const botGuilds = await botGuildsResponse.json();
+                                const botGuild = botGuilds.find(bg => bg.id === guild.id);
+                                botPresent = !!botGuild;
                             }
+                        } catch (error) {
+                            console.error(`Error checking bot guild list for ${guild.id}:`, error);
                         }
                     }
 
@@ -378,10 +389,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     };
                 } catch (error) {
                     console.error(`Error checking bot presence for guild ${guild.id}:`, error);
+                    // On error, assume bot is not present
                     return {
                         ...guild,
                         botPresent: false,
-                        memberCount: 0,
+                        memberCount: guild.approximate_member_count || 0,
                         features: [],
                         joinedAt: ''
                     };
