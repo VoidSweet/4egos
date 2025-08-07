@@ -101,23 +101,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-                            <p><Toggle  
-                                data-send-on-save 
-                                data-type={'bitfield'}
-                                data-value={GuildConfigs.LOG_UNBAN}
-                                defaultChecked={(guild?.configs & GuildConfigs.LOG_UNBAN) == GuildConfigs.LOG_UNBAN}
-                            /><label style={{marginLeft: '1%', fontSize: '18px'}}><strong>Registrar evento de &quot;unban&quot;</strong></label></p>
-                            <p>Registrar no canal de modlogs quando um banimento for retirado.<br />Para mostrar o motivo e o autor, você precisa dar ao bot permissão de <code>Ver registro de autoria</code>.</p>
-                        </CheckRadio>
-
-                        <hr />
-
-                        <CheckRadio>
-                            <p><Toggle  
-                                data-send-on-save 
-                                data-type={'bitfield'}
-                                data-value={GuildConfigs.LOG_EVENTS}
-                                defaultChecked={(guild?.configs & GuildConfigs.LOG_EVENTS) == GuildConfigs.LOG_EVENTS}
                             /><label style={{marginLeft: '1%', fontSize: '18px'}}><strong>Eventos de banimento não feitos através da Lunar</strong></label></p>
                             <p>Registrar no canal de modlogs e punições quando um banimento for aplicado e não tenha sido feito pela Lunar.<br />Para mostrar o motivo e o autor, você precisa dar ao bot permissão de <code>Ver registro de autoria</code>.</p>
                         </CheckRadio>
