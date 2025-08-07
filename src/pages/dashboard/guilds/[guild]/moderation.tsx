@@ -1,153 +1,106 @@
-import React from 'react';
-import Script from 'next/script';
-import { GetServerSideProps } from 'next'
-import socket from 'socket.io-client';
-import { parseCookies } from 'nookies';
+import React, { useState, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
+import DashboardLayout from '../../../../components/layout/DashboardLayout';
+import styles from '../../../../styles/DashboardLayout.module.css';
 
-import LeftMenu from '../../../../components/LeftMenu';
-import LoadingPage from '../../../../components/LoadingPage';
+interface ModerationProps {
+  guildId: string;
+}
 
-import Select, { Option } from '../../../../components/Select';
-import Toggle, { CheckRadio } from '../../../../components/Toggle';
+export default function Moderation({ guildId }: ModerationProps) {
+  const [moderationChannel, setModerationChannel] = useState('');
+  const [punishmentChannel, setPunishmentChannel] = useState('');
+  const [mandatoryReason, setMandatoryReason] = useState(false);
+  const [autoModeration, setAutoModeration] = useState(false);
 
-import styles from '../../../../styles/main.module.css';
+  return (
+    <DashboardLayout>
+      <div className={styles.pageContainer}>
+        <h1 className={styles.pageTitle}>Moderation Settings</h1>
+        
+        <div className={styles.section}>
+          <h2>Moderation Logs Channel</h2>
+          <select 
+            className={styles.select}
+            value={moderationChannel}
+            onChange={(e) => setModerationChannel(e.target.value)}
+          >
+            <option value="">Select Channel</option>
+            <option value="general">general</option>
+            <option value="mod-logs">mod-logs</option>
+          </select>
+          <p className={styles.description}>
+            Channel where moderation logs will be sent.
+            <br />
+            <code style={{color: "var(--success-color)"}}>+ Shows author, user, reason, id and link to punishment log</code>
+          </p>
+        </div>
 
-import { createState } from '../../../../utils/states';
+        <div className={styles.section}>
+          <h2>Punishment Channel</h2>
+          <select 
+            className={styles.select}
+            value={punishmentChannel}
+            onChange={(e) => setPunishmentChannel(e.target.value)}
+          >
+            <option value="">Select Channel</option>
+            <option value="general">general</option>
+            <option value="punishments">punishments</option>
+          </select>
+          <p className={styles.description}>
+            Channel where punishment messages will be sent.
+            <br />
+            <code style={{color: "var(--success-color)"}}>+ Customization possible (BETA)</code>
+          </p>
+        </div>
 
-import { IUser, IGuildSuper, IChannel } from '../../../../types';
-import { GuildConfigs } from '../../../../Constants';
+        <div className={styles.section}>
+          <h2>Moderation Options</h2>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={mandatoryReason}
+              onChange={(e) => setMandatoryReason(e.target.checked)}
+            />
+            <strong>Require reason for punishments</strong>
+          </label>
+          <p className={styles.description}>
+            Make it mandatory to provide a reason when applying punishments.
+            This only applies to users without the "Punish without reason" permission.
+          </p>
+        </div>
 
-interface IState {
-    user: IUser | null;
-    guild: IGuildSuper;
-    loading: boolean;
+        <div className={styles.section}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={autoModeration}
+              onChange={(e) => setAutoModeration(e.target.checked)}
+            />
+            <strong>Enable Auto-Moderation</strong>
+          </label>
+          <p className={styles.description}>
+            Automatically moderate messages based on configured rules.
+          </p>
+        </div>
+
+        <button className={styles.saveButton}>
+          Save Settings
+        </button>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { guild } = context.params!;
+  
+  return {
+    props: {
+      guildId: guild as string,
+    },
+  };
 };
-
-interface IProps {
-    theme: string;
-    token: string;
-    hostApi: string;
-    guildId: string;
-};
-
-export default class DashboardMe extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            user: null,
-            guild: null,
-            loading: true,
-        } as IState;
-    }
-
-    render() {
-        const { user, guild, loading } = this.state as IState;
-        const { token, hostApi, guildId } = this.props as IProps;
-
-        return (
-            <>
-                <LoadingPage {...{loading}} />
-                
-                <LeftMenu {...{user, guild, saveButton: true}}/>
-
-                <div className={`${styles['content']}`}>
-                    <div className={styles['small-card']}>
-                        <h3>Moderation logs channel</h3>
-                        <br />
-                        <Select 
-                            {...{
-                                id: 'select-modlogs_channel',
-                                placeholder: 'Select channel',
-                                value: guild?.channels.find(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type) && channel.id == guild.modlogs_channel)?.name
-                            }} 
-                            data-value={guild?.modlogs_channel} 
-                            data-send-on-save 
-                            data-type={'select'}
-                        >
-                            <Option 
-                                data-value={'none'} 
-                                data-li={'No channel selected'}
-                                selected={!guild?.punishments_channel}
-                            >
-                                <i className={'fas fa-folder-times'} /> Nunhum
-                            </Option>
-                            {guild?.channels
-                            .filter(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type))
-                            .map(channel => (
-                                <Option 
-                                    key={channel.id} 
-                                    data-value={channel.id} 
-                                    data-li={channel.name}
-                                    selected={channel.id === guild.modlogs_channel}
-                                >
-                                    <i className={'fas fa-hashtag'} /> {channel.name}
-                                </Option>
-                            ))}
-                        </Select>
-                        <br />
-                        <p>
-                            Canal onde será enviado as mensagem de modlogs. <a href="https://imgur.com/eUWWLQ8.png"><code>Exemplo</code></a>
-                            <br /><code style={{color: "var(--luny-colors-green)"}}>+ Shows author, user, reason, id and link to punishment log</code>, 
-                            <br /><code style={{color: "var(--luny-colors-red)"}}>- Não é possível customizar</code>
-                        </p>
-                    </div>
-
-                    <div className={styles['small-card']}>
-                        <h3>Punishments channel</h3>
-                        <br />
-                        <Select 
-                            {...{
-                                id: 'select-punishments_channel',
-                                placeholder: 'Select channel',
-                                value: guild?.channels.find(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type) && channel.id == guild.punishments_channel)?.name
-                            }} 
-                            data-value={guild?.punishments_channel} 
-                            data-send-on-save 
-                            data-type={'select'}
-                        >
-                            <Option 
-                                data-value={'none'} 
-                                data-li={'Nenhum canal selecionado'}
-                                selected={!guild?.punishments_channel}
-                            >
-                                <i className={'fas fa-folder-times'} /> Nunhum
-                            </Option>
-                            {guild?.channels
-                            .filter(channel => ["GUILD_TEXT", "GUILD_NEWS"].includes(channel.type))
-                            .map(channel => (
-                                <Option 
-                                    key={channel.id} 
-                                    data-value={channel.id} 
-                                    data-li={channel.name}
-                                    selected={channel.id === guild.punishments_channel}
-                                >
-                                    <i className={'fas fa-hashtag'} /> {channel.name}
-                                </Option>
-                            ))}
-                        </Select>
-                        <br />
-                        <p>
-                            Canal onde será enviado as mensagem de punições.
-                            <br /><code style={{color: "var(--luny-colors-green)"}}>+ Customização possível (BETA)</code>, 
-                            <br /><code style={{color: "var(--luny-colors-red)"}}>- Não mostra id e link de log da punição</code>
-                        </p>
-                    </div>
-
-                    <div className={styles['card']}>
-                        <CheckRadio>
-                            <p><Toggle  
-                                data-send-on-save 
-                                data-type={'bitfield'}
-                                data-value={GuildConfigs.MANDATORY_REASON}
-                                defaultChecked={(guild?.configs & GuildConfigs.MANDATORY_REASON) == GuildConfigs.MANDATORY_REASON}
-                            /> <label style={{marginLeft: '0.8%', fontSize: '18px'}}><strong>Tornar obrigatório ter um motivo para as punições</strong></label></p>
-                            <p>Allow that a punishment using Lunar can only be applied with a specified reason.<br />This option will only be applied for users who do not have a role with the permission <code>Punish without reason</code>.</p>
-                        </CheckRadio>
-                    
-                        <hr />
-
-                        <CheckRadio>
                             <p><Toggle  
                                 data-send-on-save 
                                 data-type={'bitfield'}

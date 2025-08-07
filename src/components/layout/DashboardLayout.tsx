@@ -135,6 +135,29 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
 
         {/* Main Content */}
         <div className="dark-main-content">
+          {/* Top Bar with Mini Profile */}
+          <div className="dark-topbar">
+            <div className="dark-topbar-left">
+              {/* Breadcrumb or page title can go here */}
+            </div>
+            <div className="dark-topbar-right">
+              <div className="dark-mini-profile">
+                <img 
+                  src="https://cdn.discordapp.com/embed/avatars/0.png" 
+                  alt="User Avatar"
+                  className="dark-mini-profile-avatar"
+                />
+                <div className="dark-mini-profile-info">
+                  <span className="dark-mini-profile-name">User#1234</span>
+                  <span className="dark-mini-profile-status">Online</span>
+                </div>
+                <div className="dark-mini-profile-dropdown">
+                  <button className="dark-mini-profile-dropdown-btn">⚙️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           {children}
         </div>
       </div>
