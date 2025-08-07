@@ -101,6 +101,12 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
           icon: '💳', 
           href: '/dashboard/billing',
           active: currentPath.includes('billing')
+        },
+        { 
+          label: 'Diagnostics', 
+          icon: '🔧', 
+          href: '/dashboard/diagnostics',
+          active: currentPath.includes('diagnostics')
         }
       ]
     }
