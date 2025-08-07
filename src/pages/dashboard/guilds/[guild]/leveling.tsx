@@ -347,37 +347,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 };
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const { ['__SessionLuny']: token } = parseCookies(context);
-    const { guild } = context.query;
-    const guildId = guild as string;
-    
-    if (!token) {
-      return {
-        redirect: {
-          destination: '/api/auth/login',
-          permanent: false,
-        }
-      };
-    }
-
-    return {
-      props: {
-        guildId
-      }
-    };
-
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    
-    return {
-      redirect: {
-        destination: '/api/auth/login',
-        permanent: false,
-      }
-    };
-  }
-};
