@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
@@ -51,15 +51,7 @@ export default function GeneralSettings({ user, guild }: IProps) {
     const [channels, setChannels] = useState<any[]>([]);
     const [roles, setRoles] = useState<any[]>([]);
 
-    useEffect(() => {
-        if (guildId) {
-            fetchGuildSettings();
-            fetchGuildChannels();
-            fetchGuildRoles();
-        }
-    }, [guildId]);
-
-    const fetchGuildSettings = async () => {
+    const fetchGuildSettings = useCallback(async () => {
         try {
             const response = await fetch(`/api/bot/${guildId}/settings`);
             if (response.ok) {
@@ -71,9 +63,9 @@ export default function GeneralSettings({ user, guild }: IProps) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [guildId]);
 
-    const fetchGuildChannels = async () => {
+    const fetchGuildChannels = useCallback(async () => {
         try {
             const response = await fetch(`/api/bot/${guildId}/channels`);
             if (response.ok) {
@@ -83,9 +75,9 @@ export default function GeneralSettings({ user, guild }: IProps) {
         } catch (error) {
             console.error('Error fetching channels:', error);
         }
-    };
+    }, [guildId]);
 
-    const fetchGuildRoles = async () => {
+    const fetchGuildRoles = useCallback(async () => {
         try {
             const response = await fetch(`/api/bot/${guildId}/roles`);
             if (response.ok) {
@@ -95,7 +87,15 @@ export default function GeneralSettings({ user, guild }: IProps) {
         } catch (error) {
             console.error('Error fetching roles:', error);
         }
-    };
+    }, [guildId]);
+
+    useEffect(() => {
+        if (guildId) {
+            fetchGuildSettings();
+            fetchGuildChannels();
+            fetchGuildRoles();
+        }
+    }, [guildId, fetchGuildSettings, fetchGuildChannels, fetchGuildRoles]);
 
     const saveSettings = async () => {
         setSaving(true);

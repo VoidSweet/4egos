@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
@@ -48,14 +48,7 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (guildId) {
-      fetchBotStats();
-      fetchRecentActivity();
-    }
-  }, [guildId]);
-
-  const fetchBotStats = async () => {
+  const fetchBotStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/stats`);
       if (response.ok) {
@@ -71,11 +64,9 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
         commandsExecuted: 1247,
         version: '2.1.0',
         latency: 45
-      });
-    }
-  };
+  }, [guildId]);
 
-  const fetchRecentActivity = async () => {
+  const fetchRecentActivity = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/activity`);
       if (response.ok) {
@@ -125,7 +116,14 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [guildId]);
+
+  useEffect(() => {
+    if (guildId) {
+      fetchBotStats();
+      fetchRecentActivity();
+    }
+  }, [guildId, fetchBotStats, fetchRecentActivity]);
 
   const getActivityIcon = (type: string) => {
     switch (type) {

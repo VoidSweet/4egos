@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 import Head from 'next/head';
@@ -60,13 +60,7 @@ export default function BrandingPage({ user, guild }: IProps) {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
-  useEffect(() => {
-    if (guildId) {
-      fetchBrandingSettings();
-    }
-  }, [guildId]);
-
-  const fetchBrandingSettings = async () => {
+  const fetchBrandingSettings = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/branding`);
       if (response.ok) {
@@ -76,7 +70,13 @@ export default function BrandingPage({ user, guild }: IProps) {
     } catch (error) {
       console.error('Error fetching branding settings:', error);
     }
-  };
+  }, [guildId]);
+
+  useEffect(() => {
+    if (guildId) {
+      fetchBrandingSettings();
+    }
+  }, [guildId, fetchBrandingSettings]);
 
   const handleSave = async () => {
     setIsLoading(true);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
@@ -48,14 +48,7 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (guildId) {
-      fetchBotStats();
-      fetchRecentActivity();
-    }
-  }, [guildId]);
-
-  const fetchBotStats = async () => {
+  const fetchBotStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/stats`);
       if (response.ok) {
@@ -72,9 +65,9 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
         latency: 45
       });
     }
-  };
+  }, [guildId]);
 
-  const fetchRecentActivity = async () => {
+  const fetchRecentActivity = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/activity`);
       if (response.ok) {
@@ -88,6 +81,19 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
           id: '1',
           type: 'join',
           user: 'NewMember',
+          timestamp: Date.now() - 300000,
+          details: 'User joined the server'
+        }
+      ]);
+    }
+  }, [guildId]);
+
+  useEffect(() => {
+    if (guildId) {
+      fetchBotStats();
+      fetchRecentActivity();
+    }
+  }, [guildId, fetchBotStats, fetchRecentActivity]);
           action: 'joined the server',
           timestamp: '2 minutes ago'
         },

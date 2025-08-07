@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
@@ -31,9 +31,9 @@ export default function LevelingPage({ guildId }: Props) {
     if (guildId) {
       fetchLevelingSettings();
     }
-  }, [guildId]);
+  }, [guildId, fetchLevelingSettings]);
 
-  const fetchLevelingSettings = async () => {
+  const fetchLevelingSettings = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/leveling`);
       if (response.ok) {
@@ -45,7 +45,7 @@ export default function LevelingPage({ guildId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [guildId]);
 
   const handleSaveSettings = async () => {
     try {
