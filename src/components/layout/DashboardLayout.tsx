@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 interface DashboardLayoutProps {
@@ -148,9 +149,11 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
             </div>
             <div className="dark-topbar-right">
               <div className="dark-mini-profile">
-                <img 
+                <Image 
                   src="https://cdn.discordapp.com/embed/avatars/0.png" 
                   alt="User Avatar"
+                  width={32}
+                  height={32}
                   className="dark-mini-profile-avatar"
                 />
                 <div className="dark-mini-profile-info">
