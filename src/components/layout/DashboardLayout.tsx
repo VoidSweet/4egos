@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import '../../../src/styles/dark-theme.css';
 
 interface DashboardLayoutProps {
   children: ReactNode;

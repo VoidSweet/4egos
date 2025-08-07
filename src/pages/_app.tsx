@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { useState, useEffect } from 'react';
 
 import '../styles/styles.css';
+import '../styles/dark-theme.css';
 import Theme from '../utils/theme';
 
 export default function MyApp({ Component, pageProps }) {

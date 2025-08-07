@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import DashboardLayout from '../../../../components/layout/DashboardLayout';
-import '../../../../styles/dark-theme.css';
 
 interface GuildStats {
   memberCount: number;
