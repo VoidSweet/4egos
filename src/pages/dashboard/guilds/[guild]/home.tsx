@@ -1,58 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 import DashboardLayout from '../../../../components/layout/DashboardLayout';
 
-interface GuildStats {
+interface GuildData {
+  id: string;
+  name: string;
+  icon: string | null;
   memberCount: number;
-  botStatus: string;
-  securityLevel: string;
-  activeCommands: number;
-  recentActivity: string[];
+  features: string[];
+  premiumTier: number;
+  region: string;
+  botPermissions: string;
 }
 
-export default function GuildDashboard() {
-  const router = useRouter();
-  const { guild } = router.query;
-  const guildId = guild as string;
+interface BotStats {
+  status: 'online' | 'offline' | 'idle';
+  uptime: number;
+  commandsExecuted: number;
+  version: string;
+  latency: number;
+}
 
-  const [stats, setStats] = useState<GuildStats>({
-    memberCount: 0,
-    botStatus: 'Online',
-    securityLevel: 'High',
-    activeCommands: 0,
-    recentActivity: []
+interface RecentActivity {
+  id: string;
+  type: 'join' | 'leave' | 'level' | 'moderation' | 'economy' | 'security';
+  user: string;
+  action: string;
+  timestamp: string;
+}
+
+interface Props {
+  guildData: GuildData;
+  guildId: string;
+}
+
+export default function GuildDashboard({ guildData, guildId }: Props) {
+  const router = useRouter();
+  const [botStats, setBotStats] = useState<BotStats>({
+    status: 'online',
+    uptime: 0,
+    commandsExecuted: 0,
+    version: '2.1.0',
+    latency: 0
   });
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (guildId) {
-      fetchGuildStats();
+      fetchBotStats();
+      fetchRecentActivity();
     }
   }, [guildId]);
 
-  const fetchGuildStats = async () => {
+  const fetchBotStats = async () => {
     try {
-      setLoading(true);
-      
-      // Simulate API call - replace with real API when available
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock data for demonstration
-      setStats({
-        memberCount: 1250,
-        botStatus: 'Online',
-        securityLevel: 'High',
-        activeCommands: 47,
-        recentActivity: [
-          'User joined: @NewMember',
-          'Level up: @Player reached level 15',
-          'Moderation: Warning issued to @User',
-          'Economy: 50 coins earned by @Trader',
-          'Security: Auto-role assigned'
-        ]
-      });
+      const response = await fetch(`/api/bot/${guildId}/stats`);
+      if (response.ok) {
+        const data = await response.json();
+        setBotStats(data);
+      }
     } catch (error) {
-      console.error('Failed to fetch guild stats:', error);
+      console.error('Failed to fetch bot stats:', error);
+      setBotStats({
+        status: 'online',
+        uptime: 99.9,
+        commandsExecuted: 1247,
+        version: '2.1.0',
+        latency: 45
+      });
+    }
+  };
+
+  const fetchRecentActivity = async () => {
+    try {
+      const response = await fetch(`/api/bot/${guildId}/activity`);
+      if (response.ok) {
+        const data = await response.json();
+        setRecentActivity(data.activities || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch recent activity:', error);
+      setRecentActivity([
+        {
+          id: '1',
+          type: 'join',
+          user: 'NewMember',
+          action: 'joined the server',
+          timestamp: '2 minutes ago'
+        },
+        {
+          id: '2',
+          type: 'level',
+          user: 'Player',
+          action: 'reached level 15',
+          timestamp: '5 minutes ago'
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -61,235 +107,35 @@ export default function GuildDashboard() {
   if (loading) {
     return (
       <DashboardLayout guildId={guildId}>
-        <div className="dark-content-header">
-          <h1 className="dark-content-title">
-            🏠 Dashboard
-          </h1>
-          <p className="dark-content-subtitle">Loading server overview...</p>
-        </div>
-        <div className="dark-content-body">
-          <div className="dark-card">
-            <div style={{ textAlign: 'center', padding: '40px' }}>
-              <div style={{ fontSize: '48px', marginBottom: '20px' }}>⏳</div>
-              <h3 style={{ color: 'var(--text-primary)', marginBottom: '10px' }}>Loading Dashboard</h3>
-              <p style={{ color: 'var(--text-muted)' }}>Fetching your server statistics...</p>
-            </div>
-          </div>
-        </div>
+        <div>Loading...</div>
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout guildId={guildId}>
-      {/* Content Header */}
-      <div className="dark-content-header">
-        <h1 className="dark-content-title">
-          🏠 Dashboard
-        </h1>
-        <p className="dark-content-subtitle">Welcome to your server control panel</p>
-      </div>
-
-      {/* Content Body */}
-      <div className="dark-content-body">
-        {/* Stats Grid */}
-        <div className="dark-stats-grid">
-          <div className="dark-stat-card">
-            <div className="dark-stat-icon blue">
-              👥
-            </div>
-            <div className="dark-stat-content">
-              <h3>{stats.memberCount.toLocaleString()}</h3>
-              <p>Total Members</p>
-              <span className="dark-stat-badge info">Active Community</span>
-            </div>
-          </div>
-
-          <div className="dark-stat-card">
-            <div className="dark-stat-icon green">
-              🟢
-            </div>
-            <div className="dark-stat-content">
-              <h3>{stats.botStatus}</h3>
-              <p>Bot Status</p>
-              <span className="dark-stat-badge online">Operational</span>
-            </div>
-          </div>
-
-          <div className="dark-stat-card">
-            <div className="dark-stat-icon yellow">
-              🛡️
-            </div>
-            <div className="dark-stat-content">
-              <h3>{stats.securityLevel}</h3>
-              <p>Security Level</p>
-              <span className="dark-stat-badge secure">Protected</span>
-            </div>
-          </div>
-
-          <div className="dark-stat-card">
-            <div className="dark-stat-icon purple">
-              ⚡
-            </div>
-            <div className="dark-stat-content">
-              <h3>{stats.activeCommands}</h3>
-              <p>Active Commands</p>
-              <span className="dark-stat-badge info">Available</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px', marginBottom: '30px' }}>
-          {/* Quick Actions */}
-          <div className="dark-card">
-            <div className="dark-card-header">
-              <h2 className="dark-card-title">
-                ⚡ Quick Actions
-              </h2>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-              <button 
-                className="dark-btn dark-btn-primary"
-                onClick={() => router.push(`/dashboard/guilds/${guildId}/moderation`)}
-              >
-                🛡️ Moderation Panel
-              </button>
-              <button 
-                className="dark-btn dark-btn-primary"
-                onClick={() => router.push(`/dashboard/guilds/${guildId}/economy`)}
-              >
-                💰 Economy Settings
-              </button>
-              <button 
-                className="dark-btn dark-btn-primary"
-                onClick={() => router.push(`/dashboard/guilds/${guildId}/leveling`)}
-              >
-                ⬆️ Leveling System
-              </button>
-              <button 
-                className="dark-btn dark-btn-primary"
-                onClick={() => router.push(`/dashboard/guilds/${guildId}/security`)}
-              >
-                🔒 Security Settings
-              </button>
-            </div>
-          </div>
-
-          {/* Server Information */}
-          <div className="dark-card">
-            <div className="dark-card-header">
-              <h2 className="dark-card-title">
-                ℹ️ Server Info
-              </h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Server ID:</span>
-                <code style={{ 
-                  background: 'var(--bg-secondary)', 
-                  padding: '4px 8px', 
-                  borderRadius: '4px', 
-                  fontSize: '12px',
-                  color: 'var(--text-primary)'
-                }}>
-                  {guildId}
-                </code>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Bot Version:</span>
-                <span style={{ color: 'var(--text-primary)' }}>v2.1.0</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Uptime:</span>
-                <span style={{ color: 'var(--accent-green)' }}>99.9%</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Region:</span>
-                <span style={{ color: 'var(--text-primary)' }}>US East</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="dark-card">
-          <div className="dark-card-header">
-            <h2 className="dark-card-title">
-              📊 Recent Activity
-            </h2>
-            <p className="dark-card-subtitle">Latest events in your server</p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {stats.recentActivity.map((activity, index) => (
-              <div 
-                key={index}
-                style={{
-                  padding: '12px',
-                  background: 'var(--bg-secondary)',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border-primary)',
-                  fontSize: '14px',
-                  color: 'var(--text-secondary)'
-                }}
-              >
-                {activity}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bot Management Actions */}
-        <div className="dark-card" style={{ marginTop: '20px' }}>
-          <div className="dark-card-header">
-            <h2 className="dark-card-title">
-              🤖 Bot Management
-            </h2>
-            <p className="dark-card-subtitle">Control your bot settings and features</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px' }}>
-            <div style={{ 
-              padding: '15px', 
-              background: 'var(--bg-secondary)', 
-              borderRadius: '8px',
-              border: '1px solid var(--border-primary)'
-            }}>
-              <h4 style={{ color: 'var(--text-primary)', marginBottom: '10px' }}>🔧 System Status</h4>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '10px' }}>
-                All systems operational
-              </p>
-              <span className="dark-stat-badge online">Healthy</span>
-            </div>
-            
-            <div style={{ 
-              padding: '15px', 
-              background: 'var(--bg-secondary)', 
-              borderRadius: '8px',
-              border: '1px solid var(--border-primary)'
-            }}>
-              <h4 style={{ color: 'var(--text-primary)', marginBottom: '10px' }}>📈 Performance</h4>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '10px' }}>
-                Response time: 45ms
-              </p>
-              <span className="dark-stat-badge info">Excellent</span>
-            </div>
-            
-            <div style={{ 
-              padding: '15px', 
-              background: 'var(--bg-secondary)', 
-              borderRadius: '8px',
-              border: '1px solid var(--border-primary)'
-            }}>
-              <h4 style={{ color: 'var(--text-primary)', marginBottom: '10px' }}>🔄 Last Update</h4>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '10px' }}>
-                2 hours ago
-              </p>
-              <span className="dark-stat-badge info">Recent</span>
-            </div>
-          </div>
-        </div>
+      <div className='dark-content-header'>
+        <h1>Dashboard Home</h1>
       </div>
     </DashboardLayout>
   );
 }
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { guild } = context.query;
+  return {
+    props: {
+      guildData: {
+        id: guild as string,
+        name: 'Test Server',
+        icon: null,
+        memberCount: 100,
+        features: [],
+        premiumTier: 0,
+        region: 'US',
+        botPermissions: '0'
+      },
+      guildId: guild as string
+    }
+  };
+};

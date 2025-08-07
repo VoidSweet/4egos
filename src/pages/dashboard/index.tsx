@@ -72,7 +72,7 @@ export default function ServerSelection({ user, guilds: initialGuilds }: IProps)
     };
 
     const handleServerClick = (guildId: string) => {
-        router.push(`/dashboard/guilds/${guildId}`);
+        router.push(`/dashboard/guilds/${guildId}/home`);
     };
 
     return (

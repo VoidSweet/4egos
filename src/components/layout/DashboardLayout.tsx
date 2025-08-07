@@ -165,40 +165,90 @@ export default function DashboardLayout({ children, guildId }: DashboardLayoutPr
                 className="dark-sidebar-profile-content"
                 onClick={() => setShowUserDropdown(!showUserDropdown)}
               >
-                <Image 
-                  src={getUserAvatarUrl()} 
-                  alt="User Avatar"
-                  width={40}
-                  height={40}
-                  className="dark-sidebar-profile-avatar"
-                />
+                <div className="dark-sidebar-profile-avatar-container">
+                  <Image 
+                    src={getUserAvatarUrl()} 
+                    alt="User Avatar"
+                    width={36}
+                    height={36}
+                    className="dark-sidebar-profile-avatar"
+                  />
+                  <div className="dark-sidebar-profile-status-indicator"></div>
+                </div>
                 <div className="dark-sidebar-profile-info">
                   <span className="dark-sidebar-profile-name">
                     {user.username}
-                    {user.discriminator !== '0' && `#${user.discriminator}`}
                   </span>
-                  <span className="dark-sidebar-profile-status">Online</span>
+                  <span className="dark-sidebar-profile-status">
+                    <span className="dark-status-dot"></span>
+                    Online
+                  </span>
                 </div>
-                <div className="dark-sidebar-profile-dropdown-icon">
-                  {showUserDropdown ? '▲' : '▼'}
+                <div className={`dark-sidebar-profile-dropdown-icon ${showUserDropdown ? 'rotated' : ''}`}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                    <path d="M6 8.5L2.5 5h7L6 8.5z"/>
+                  </svg>
                 </div>
               </div>
               
               {showUserDropdown && (
                 <div className="dark-sidebar-profile-dropdown">
-                  <Link href="/dashboard/@me" className="dark-sidebar-profile-dropdown-item">
-                    👤 Profile
-                  </Link>
-                  <Link href="/dashboard/billing" className="dark-sidebar-profile-dropdown-item">
-                    💳 Billing
-                  </Link>
-                  <Link href="/invite" className="dark-sidebar-profile-dropdown-item">
-                    ➕ Invite Bot
-                  </Link>
-                  <div className="dark-sidebar-profile-dropdown-divider"></div>
-                  <Link href="/api/auth/logout" className="dark-sidebar-profile-dropdown-item logout">
-                    🚪 Logout
-                  </Link>
+                  <div className="dark-sidebar-profile-dropdown-header">
+                    <div className="dark-sidebar-profile-dropdown-user">
+                      <Image 
+                        src={getUserAvatarUrl()} 
+                        alt="User Avatar"
+                        width={48}
+                        height={48}
+                        className="dark-sidebar-profile-dropdown-avatar"
+                      />
+                      <div>
+                        <div className="dark-sidebar-profile-dropdown-name">
+                          {user.username}
+                          {user.discriminator !== '0' && (
+                            <span className="dark-sidebar-profile-dropdown-discriminator">
+                              #{user.discriminator}
+                            </span>
+                          )}
+                        </div>
+                        <div className="dark-sidebar-profile-dropdown-id">
+                          ID: {user.id}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="dark-sidebar-profile-dropdown-menu">
+                    <Link href="/dashboard/@me" className="dark-sidebar-profile-dropdown-item">
+                      <div className="dark-dropdown-item-icon">👤</div>
+                      <div className="dark-dropdown-item-text">
+                        <span>My Profile</span>
+                        <small>View and edit profile</small>
+                      </div>
+                    </Link>
+                    <Link href="/dashboard/billing" className="dark-sidebar-profile-dropdown-item">
+                      <div className="dark-dropdown-item-icon">💳</div>
+                      <div className="dark-dropdown-item-text">
+                        <span>Billing</span>
+                        <small>Manage subscription</small>
+                      </div>
+                    </Link>
+                    <Link href="/invite" className="dark-sidebar-profile-dropdown-item">
+                      <div className="dark-dropdown-item-icon">➕</div>
+                      <div className="dark-dropdown-item-text">
+                        <span>Invite Bot</span>
+                        <small>Add to new servers</small>
+                      </div>
+                    </Link>
+                    <div className="dark-sidebar-profile-dropdown-divider"></div>
+                    <Link href="/api/auth/logout" className="dark-sidebar-profile-dropdown-item logout">
+                      <div className="dark-dropdown-item-icon">🚪</div>
+                      <div className="dark-dropdown-item-text">
+                        <span>Logout</span>
+                        <small>Sign out of dashboard</small>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
