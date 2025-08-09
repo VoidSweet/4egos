@@ -64,6 +64,8 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
         commandsExecuted: 1247,
         version: '2.1.0',
         latency: 45
+      });
+    }
   }, [guildId]);
 
   const fetchRecentActivity = useCallback(async () => {

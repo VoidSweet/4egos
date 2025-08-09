@@ -27,12 +27,6 @@ export default function LevelingPage({ guildId }: Props) {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (guildId) {
-      fetchLevelingSettings();
-    }
-  }, [guildId, fetchLevelingSettings]);
-
   const fetchLevelingSettings = useCallback(async () => {
     try {
       const response = await fetch(`/api/bot/${guildId}/leveling`);
@@ -46,6 +40,12 @@ export default function LevelingPage({ guildId }: Props) {
       setLoading(false);
     }
   }, [guildId]);
+
+  useEffect(() => {
+    if (guildId) {
+      fetchLevelingSettings();
+    }
+  }, [guildId, fetchLevelingSettings]);
 
   const handleSaveSettings = async () => {
     try {

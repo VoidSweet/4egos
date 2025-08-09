@@ -81,19 +81,6 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
           id: '1',
           type: 'join',
           user: 'NewMember',
-          timestamp: Date.now() - 300000,
-          details: 'User joined the server'
-        }
-      ]);
-    }
-  }, [guildId]);
-
-  useEffect(() => {
-    if (guildId) {
-      fetchBotStats();
-      fetchRecentActivity();
-    }
-  }, [guildId, fetchBotStats, fetchRecentActivity]);
           action: 'joined the server',
           timestamp: '2 minutes ago'
         },
@@ -129,7 +116,14 @@ export default function GuildDashboard({ guildData, guildId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [guildId]);
+
+  useEffect(() => {
+    if (guildId) {
+      fetchBotStats();
+      fetchRecentActivity();
+    }
+  }, [guildId, fetchBotStats, fetchRecentActivity]);
 
   const getActivityIcon = (type: string) => {
     switch (type) {
